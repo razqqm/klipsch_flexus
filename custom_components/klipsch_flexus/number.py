@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from homeassistant.components.number import NumberEntity, NumberMode
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -32,6 +33,7 @@ class KlipschEqNumber(CoordinatorEntity[KlipschCoordinator], NumberEntity):
     _attr_native_max_value = 6
     _attr_native_step = 1
     _attr_mode = NumberMode.SLIDER
+    _attr_entity_category = EntityCategory.CONFIG
 
     def __init__(
         self,
@@ -68,6 +70,7 @@ class KlipschSubNumber(CoordinatorEntity[KlipschCoordinator], NumberEntity):
     _attr_native_max_value = 6
     _attr_native_step = 1
     _attr_mode = NumberMode.SLIDER
+    _attr_entity_category = EntityCategory.CONFIG
 
     def __init__(
         self,

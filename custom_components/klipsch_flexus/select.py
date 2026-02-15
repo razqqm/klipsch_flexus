@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from homeassistant.components.select import SelectEntity
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -37,6 +38,7 @@ class KlipschNightModeSelect(CoordinatorEntity[KlipschCoordinator], SelectEntity
     _attr_has_entity_name = True
     _attr_name = "Night Mode"
     _attr_icon = "mdi:weather-night"
+    _attr_entity_category = EntityCategory.CONFIG
 
     def __init__(self, coordinator: KlipschCoordinator, entry: ConfigEntry) -> None:
         super().__init__(coordinator)
@@ -64,6 +66,7 @@ class KlipschDialogModeSelect(CoordinatorEntity[KlipschCoordinator], SelectEntit
     _attr_has_entity_name = True
     _attr_name = "Dialog Mode"
     _attr_icon = "mdi:account-voice"
+    _attr_entity_category = EntityCategory.CONFIG
 
     def __init__(self, coordinator: KlipschCoordinator, entry: ConfigEntry) -> None:
         super().__init__(coordinator)
@@ -91,6 +94,7 @@ class KlipschEqPresetSelect(CoordinatorEntity[KlipschCoordinator], SelectEntity)
     _attr_has_entity_name = True
     _attr_name = "EQ Preset"
     _attr_icon = "mdi:tune-variant"
+    _attr_entity_category = EntityCategory.CONFIG
 
     def __init__(self, coordinator: KlipschCoordinator, entry: ConfigEntry) -> None:
         super().__init__(coordinator)
@@ -117,6 +121,7 @@ class KlipschDiracSelect(CoordinatorEntity[KlipschCoordinator], SelectEntity):
     _attr_has_entity_name = True
     _attr_name = "Dirac Filter"
     _attr_icon = "mdi:tune"
+    _attr_entity_category = EntityCategory.CONFIG
 
     def __init__(self, coordinator: KlipschCoordinator, entry: ConfigEntry) -> None:
         super().__init__(coordinator)

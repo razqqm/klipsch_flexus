@@ -3,6 +3,7 @@
 DOMAIN = "klipsch_flexus"
 DEFAULT_PORT = 80
 SCAN_INTERVAL_SECONDS = 15
+CONF_SCAN_INTERVAL = "scan_interval"
 
 # API paths
 API_PATHS = {
@@ -22,6 +23,8 @@ API_PATHS = {
     "dirac": "dirac:/activeFilter",
     "sub_wired": "settings:/cinema/dsp/wiredSubwooferVolume",
     "sub_wireless": "settings:/cinema/dsp/wirelessSubwoofersVolume",
+    "player": "player:player/data",
+    "player_control": "player:player/control",
 }
 
 # Source list (input names → display names)
