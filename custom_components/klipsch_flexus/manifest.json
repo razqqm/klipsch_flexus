@@ -1,0 +1,10 @@
+{
+  "domain": "klipsch_flexus",
+  "name": "Klipsch Flexus",
+  "codeowners": ["@razqqm"],
+  "config_flow": true,
+  "documentation": "https://github.com/razqqm/klipsch_flexus",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "version": "1.0.0"
+}
