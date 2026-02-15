@@ -16,12 +16,14 @@ _LOGGER = logging.getLogger(__name__)
 class KlipschCoordinator(DataUpdateCoordinator[dict]):
     """Coordinator to poll Klipsch device status."""
 
-    def __init__(self, hass: HomeAssistant, api: KlipschAPI, name: str) -> None:
+    def __init__(
+        self, hass: HomeAssistant, api: KlipschAPI, name: str, scan_interval: int = SCAN_INTERVAL_SECONDS
+    ) -> None:
         super().__init__(
             hass,
             _LOGGER,
             name=f"{DOMAIN}_{name}",
-            update_interval=timedelta(seconds=SCAN_INTERVAL_SECONDS),
+            update_interval=timedelta(seconds=scan_interval),
         )
         self.api = api
         self.dirac_filters: list[dict] = []
@@ -41,5 +43,13 @@ class KlipschCoordinator(DataUpdateCoordinator[dict]):
                 self.dirac_filters = await self.api.get_dirac_filters()
             except Exception:
                 self.dirac_filters = []
+
+        # Fetch player/media data
+        try:
+            player = await self.api.get_player_data()
+            if player:
+                status["player"] = player
+        except Exception:
+            _LOGGER.debug("Failed to fetch player data")
 
         return status

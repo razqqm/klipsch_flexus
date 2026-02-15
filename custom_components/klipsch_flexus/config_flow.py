@@ -5,9 +5,10 @@ import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.const import CONF_HOST
+from homeassistant.core import callback
 
 from .api import KlipschAPI
-from .const import DOMAIN
+from .const import DOMAIN, SCAN_INTERVAL_SECONDS, CONF_SCAN_INTERVAL
 
 
 class KlipschFlexusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -15,13 +16,16 @@ class KlipschFlexusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
 
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry):
+        return KlipschOptionsFlow(config_entry)
+
     async def async_step_user(self, user_input=None):
         errors = {}
 
         if user_input is not None:
             host = user_input[CONF_HOST]
-
-            # Test connection
             api = KlipschAPI(host)
             try:
                 status = await api.get_status()
@@ -42,7 +46,61 @@ class KlipschFlexusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema({
-                vol.Required(CONF_HOST, default="10.0.1.51"): str,
+                vol.Required(CONF_HOST): str,
             }),
             errors=errors,
+        )
+
+    async def async_step_reconfigure(self, user_input=None):
+        """Handle reconfiguration (change IP address)."""
+        errors = {}
+        entry = self._get_reconfigure_entry()
+
+        if user_input is not None:
+            host = user_input[CONF_HOST]
+            api = KlipschAPI(host)
+            try:
+                status = await api.get_status()
+                if status.get("online"):
+                    return self.async_update_reload_and_abort(
+                        entry,
+                        data={CONF_HOST: host},
+                        title=f"Klipsch Flexus ({host})",
+                    )
+                else:
+                    errors["base"] = "cannot_connect"
+            except Exception:
+                errors["base"] = "cannot_connect"
+            finally:
+                await api.close()
+
+        return self.async_show_form(
+            step_id="reconfigure",
+            data_schema=vol.Schema({
+                vol.Required(CONF_HOST, default=entry.data.get(CONF_HOST, "")): str,
+            }),
+            errors=errors,
+        )
+
+
+class KlipschOptionsFlow(config_entries.OptionsFlow):
+    """Handle options for Klipsch Flexus."""
+
+    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
+        self._entry = config_entry
+
+    async def async_step_init(self, user_input=None):
+        if user_input is not None:
+            return self.async_create_entry(data=user_input)
+
+        return self.async_show_form(
+            step_id="init",
+            data_schema=vol.Schema({
+                vol.Optional(
+                    CONF_SCAN_INTERVAL,
+                    default=self._entry.options.get(
+                        CONF_SCAN_INTERVAL, SCAN_INTERVAL_SECONDS
+                    ),
+                ): vol.All(vol.Coerce(int), vol.Range(min=5, max=120)),
+            }),
         )

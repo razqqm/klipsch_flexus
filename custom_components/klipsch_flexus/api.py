@@ -177,3 +177,25 @@ class KlipschAPI:
             {"id": r["value"]["i32_"], "name": r["title"]}
             for r in data.get("rows", [])
         ]
+
+    async def get_player_data(self) -> dict | None:
+        """Fetch current player/media data."""
+        from .const import API_PATHS
+
+        try:
+            data = await self.get_data(API_PATHS["player"])
+            if data and isinstance(data, list) and len(data) > 0:
+                return data[0]
+        except Exception:
+            _LOGGER.debug("Failed to get player data")
+        return None
+
+    async def media_control(self, control: str) -> None:
+        """Send media control command (pause/next/previous)."""
+        from .const import API_PATHS
+
+        await self.set_data(
+            API_PATHS["player_control"],
+            {"control": control},
+            roles="activate",
+        )

@@ -3,7 +3,14 @@
     "step": {
       "user": {
         "title": "Klipsch Flexus",
-        "description": "Enter the IP address of your Klipsch Flexus soundbar.",
+        "description": "Enter the IP address of your Klipsch Flexus CORE 300 soundbar.",
+        "data": {
+          "host": "IP Address"
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure Klipsch Flexus",
+        "description": "Update the IP address of your soundbar.",
         "data": {
           "host": "IP Address"
         }
@@ -11,6 +18,16 @@
     },
     "error": {
       "cannot_connect": "Cannot connect to device. Check the IP address."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Klipsch Flexus Settings",
+        "data": {
+          "scan_interval": "Poll interval (seconds)"
+        }
+      }
     }
   }
 }
