@@ -65,7 +65,7 @@ class KlipschAPI:
             raise
 
     async def get_status(self) -> dict:
-        """Poll full device status."""
+        """Poll full device status (~160ms sequential, device is single-threaded)."""
         from .const import API_PATHS
 
         try:
