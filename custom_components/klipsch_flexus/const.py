@@ -50,19 +50,19 @@ API_PATHS = {
 # Prefixes ensure correct alphabetical sort order in HA UI
 CHANNEL_LEVELS = [
     # Surround channels (Dolby Atmos)
-    ("back_height",  "Channel: Back Height",          "mdi:speaker"),
-    ("back_left",    "Channel: Back Left",            "mdi:speaker"),
-    ("back_right",   "Channel: Back Right",           "mdi:speaker"),
-    ("front_height", "Channel: Front Height",         "mdi:speaker"),
-    ("side_left",    "Channel: Side Left",            "mdi:speaker"),
-    ("side_right",   "Channel: Side Right",           "mdi:speaker"),
+    ("back_height", "Channel: Back Height", "mdi:speaker"),
+    ("back_left", "Channel: Back Left", "mdi:speaker"),
+    ("back_right", "Channel: Back Right", "mdi:speaker"),
+    ("front_height", "Channel: Front Height", "mdi:speaker"),
+    ("side_left", "Channel: Side Left", "mdi:speaker"),
+    ("side_right", "Channel: Side Right", "mdi:speaker"),
     # Subwoofers
-    ("sub_wired",    "Channel: Subwoofer Wireless 1", "mdi:speaker-wireless"),
+    ("sub_wired", "Channel: Subwoofer Wireless 1", "mdi:speaker-wireless"),
     ("sub_wireless", "Channel: Subwoofer Wireless 2", "mdi:speaker-wireless"),
     # Tone
-    ("bass",         "Tone: Bass",                    "mdi:sine-wave"),
-    ("mid",          "Tone: Mid",                     "mdi:tune"),
-    ("treble",       "Tone: Treble",                  "mdi:music-clef-treble"),
+    ("bass", "Tone: Bass", "mdi:sine-wave"),
+    ("mid", "Tone: Mid", "mdi:tune"),
+    ("treble", "Tone: Treble", "mdi:music-clef-treble"),
 ]
 
 # Source list (input names → display names)

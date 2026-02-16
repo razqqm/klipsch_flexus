@@ -1,4 +1,5 @@
 """Diagnostic sensors for Klipsch Flexus."""
+
 from __future__ import annotations
 
 from homeassistant.components.sensor import SensorEntity, SensorStateClass
@@ -12,14 +13,14 @@ from .const import DOMAIN
 from .coordinator import KlipschCoordinator
 
 
-async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
-) -> None:
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback) -> None:
     coordinator: KlipschCoordinator = hass.data[DOMAIN][entry.entry_id]
-    async_add_entities([
-        KlipschResponseTimeSensor(coordinator, entry),
-        KlipschStatusSensor(coordinator, entry),
-    ])
+    async_add_entities(
+        [
+            KlipschResponseTimeSensor(coordinator, entry),
+            KlipschStatusSensor(coordinator, entry),
+        ]
+    )
 
 
 class KlipschResponseTimeSensor(CoordinatorEntity[KlipschCoordinator], SensorEntity):

@@ -1,4 +1,5 @@
 """Diagnostics for Klipsch Flexus."""
+
 from __future__ import annotations
 
 from typing import Any
@@ -14,9 +15,7 @@ from .coordinator import KlipschCoordinator
 TO_REDACT = {CONF_HOST}
 
 
-async def async_get_config_entry_diagnostics(
-    hass: HomeAssistant, entry: ConfigEntry
-) -> dict[str, Any]:
+async def async_get_config_entry_diagnostics(hass: HomeAssistant, entry: ConfigEntry) -> dict[str, Any]:
     """Return diagnostics for a config entry."""
     coordinator: KlipschCoordinator = hass.data[DOMAIN][entry.entry_id]
     api = coordinator.api

@@ -1,4 +1,5 @@
 """Klipsch Flexus integration."""
+
 from __future__ import annotations
 
 from homeassistant.config_entries import ConfigEntry
@@ -6,7 +7,7 @@ from homeassistant.const import CONF_HOST, Platform
 from homeassistant.core import HomeAssistant
 
 from .api import KlipschAPI
-from .const import DOMAIN, SCAN_INTERVAL_SECONDS, CONF_SCAN_INTERVAL
+from .const import CONF_SCAN_INTERVAL, DOMAIN, SCAN_INTERVAL_SECONDS
 from .coordinator import KlipschCoordinator
 
 PLATFORMS = [Platform.MEDIA_PLAYER, Platform.SELECT, Platform.NUMBER, Platform.SENSOR]

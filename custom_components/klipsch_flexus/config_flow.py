@@ -1,17 +1,17 @@
 """Config flow for Klipsch Flexus."""
+
 from __future__ import annotations
 
 from urllib.parse import urlparse
 
 import voluptuous as vol
-
 from homeassistant import config_entries
 from homeassistant.components.ssdp import SsdpServiceInfo
 from homeassistant.const import CONF_HOST
 from homeassistant.core import callback
 
 from .api import KlipschAPI
-from .const import DOMAIN, SCAN_INTERVAL_SECONDS, CONF_SCAN_INTERVAL
+from .const import CONF_SCAN_INTERVAL, DOMAIN, SCAN_INTERVAL_SECONDS
 
 
 class KlipschFlexusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -78,9 +78,11 @@ class KlipschFlexusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id="user",
-            data_schema=vol.Schema({
-                vol.Required(CONF_HOST): str,
-            }),
+            data_schema=vol.Schema(
+                {
+                    vol.Required(CONF_HOST): str,
+                }
+            ),
             errors=errors,
         )
 
@@ -109,9 +111,11 @@ class KlipschFlexusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id="reconfigure",
-            data_schema=vol.Schema({
-                vol.Required(CONF_HOST, default=entry.data.get(CONF_HOST, "")): str,
-            }),
+            data_schema=vol.Schema(
+                {
+                    vol.Required(CONF_HOST, default=entry.data.get(CONF_HOST, "")): str,
+                }
+            ),
             errors=errors,
         )
 
@@ -128,12 +132,12 @@ class KlipschOptionsFlow(config_entries.OptionsFlow):
 
         return self.async_show_form(
             step_id="init",
-            data_schema=vol.Schema({
-                vol.Optional(
-                    CONF_SCAN_INTERVAL,
-                    default=self._entry.options.get(
-                        CONF_SCAN_INTERVAL, SCAN_INTERVAL_SECONDS
-                    ),
-                ): vol.All(vol.Coerce(int), vol.Range(min=5, max=120)),
-            }),
+            data_schema=vol.Schema(
+                {
+                    vol.Optional(
+                        CONF_SCAN_INTERVAL,
+                        default=self._entry.options.get(CONF_SCAN_INTERVAL, SCAN_INTERVAL_SECONDS),
+                    ): vol.All(vol.Coerce(int), vol.Range(min=5, max=120)),
+                }
+            ),
         )
