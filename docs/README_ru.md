@@ -1,18 +1,28 @@
-# Klipsch Flexus CORE 300
-
-**Language / Язык:** [English](README.md) | Русский
+# Klipsch Flexus
 
 [![HACS Default](https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge)](https://hacs.xyz/)
 [![GitHub Release](https://img.shields.io/github/release/razqqm/klipsch_flexus.svg?style=for-the-badge)](https://github.com/razqqm/klipsch_flexus/releases)
 [![License](https://img.shields.io/github/license/razqqm/klipsch_flexus.svg?style=for-the-badge)](LICENSE)
+[![Auto Discovery](https://img.shields.io/badge/Auto_Discovery-Zeroconf-44cc11.svg?style=for-the-badge)](#автообнаружение)
 
 [![Validate](https://github.com/razqqm/klipsch_flexus/actions/workflows/validate.yaml/badge.svg)](https://github.com/razqqm/klipsch_flexus/actions/workflows/validate.yaml)
 [![Hassfest](https://github.com/razqqm/klipsch_flexus/actions/workflows/hassfest.yaml/badge.svg)](https://github.com/razqqm/klipsch_flexus/actions/workflows/hassfest.yaml)
 [![CI](https://github.com/razqqm/klipsch_flexus/actions/workflows/ci.yaml/badge.svg)](https://github.com/razqqm/klipsch_flexus/actions/workflows/ci.yaml)
+[![Ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
 
-Кастомная интеграция Home Assistant для **Klipsch Flexus CORE 300** — саундбар 5.1.2 с Dolby Atmos.
+🌐 [English](../README.md) | **Русский** | [Deutsch](README_de.md) | [Español](README_es.md) | [Português](README_pt.md)
 
-Управляет саундбаром через **локальный HTTP API** — без облака, без задержек. Частично заменяет приложение Klipsch Connect Plus для ежедневного использования.
+---
+
+Кастомная интеграция Home Assistant для саундбаров **Klipsch Flexus** — управление через **локальный HTTP API**, без облака, без задержек.
+
+### Поддерживаемые модели
+
+| Модель | Каналы | Особенности |
+|--------|--------|-------------|
+| **Flexus CORE 300** | 5.1.2 | Dirac Live, Dolby Atmos, 13 драйверов |
+| **Flexus CORE 200** | 3.1.2 | Dolby Atmos up-firing |
+| **Flexus CORE 100** | 2.1 | Virtual Dolby Atmos |
 
 > Саундбар должен быть предварительно настроен через официальное приложение Klipsch Connect Plus (Wi-Fi, прошивка, подключение колонок, калибровка Dirac). Интеграция отвечает только за управление.
 
@@ -57,14 +67,28 @@
 
 1. Откройте **HACS** > Интеграции > найдите **Klipsch Flexus**
 2. Установите и перезапустите Home Assistant
-3. Перейдите в **Настройки** > Устройства и службы > **Добавить интеграцию** > Klipsch Flexus
-4. Введите IP-адрес саундбара
+3. Саундбар должен **обнаружиться автоматически** — проверьте уведомления
+4. Или перейдите в **Настройки** > Устройства и службы > **Добавить интеграцию** > Klipsch Flexus
 
 ### Вручную
 
 1. Скопируйте `custom_components/klipsch_flexus/` в директорию `config/custom_components/` вашего HA
 2. Перезапустите Home Assistant
 3. Добавьте интеграцию через Настройки > Устройства и службы
+
+## Автообнаружение
+
+Саундбар автоматически обнаруживается в сети через **mDNS / Zeroconf** (протокол Google Cast).
+
+При включённом саундбаре Home Assistant покажет уведомление:
+> Найден **Klipsch Flexus CORE 300** по адресу `10.0.1.51`. Добавить этот саундбар?
+
+**Как это работает:**
+- Саундбар анонсирует себя как `Flexus-Core-*` через сервис `_googlecast._tcp` mDNS
+- Интеграция определяет устройство по TXT-записям `md` (модель) и `fn` (имя)
+- Прокси AirCast автоматически отфильтровываются
+
+Если автообнаружение не работает (например, сетевая изоляция), вы всегда можете добавить интеграцию вручную, указав IP-адрес.
 
 ## Конфигурация
 
@@ -133,4 +157,4 @@ Klipsch Flexus имеет **однопоточный HTTP-сервер**, обр
 
 ## Лицензия
 
-MIT — см. [LICENSE](LICENSE).
+MIT — см. [LICENSE](../LICENSE).

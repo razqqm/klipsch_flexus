@@ -1,19 +1,28 @@
-# Klipsch Flexus CORE 300
-
-**Language / Язык:** English | [Русский](README_ru.md)
+# Klipsch Flexus
 
 [![HACS Default](https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge)](https://hacs.xyz/)
 [![GitHub Release](https://img.shields.io/github/release/razqqm/klipsch_flexus.svg?style=for-the-badge)](https://github.com/razqqm/klipsch_flexus/releases)
 [![License](https://img.shields.io/github/license/razqqm/klipsch_flexus.svg?style=for-the-badge)](LICENSE)
+[![Auto Discovery](https://img.shields.io/badge/Auto_Discovery-Zeroconf-44cc11.svg?style=for-the-badge)](#auto-discovery)
 
 [![Validate](https://github.com/razqqm/klipsch_flexus/actions/workflows/validate.yaml/badge.svg)](https://github.com/razqqm/klipsch_flexus/actions/workflows/validate.yaml)
 [![Hassfest](https://github.com/razqqm/klipsch_flexus/actions/workflows/hassfest.yaml/badge.svg)](https://github.com/razqqm/klipsch_flexus/actions/workflows/hassfest.yaml)
 [![CI](https://github.com/razqqm/klipsch_flexus/actions/workflows/ci.yaml/badge.svg)](https://github.com/razqqm/klipsch_flexus/actions/workflows/ci.yaml)
 [![Ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
 
-Home Assistant custom integration for **Klipsch Flexus CORE 300** — a 5.1.2-Channel Dolby Atmos Sound Bar.
+🌐 **English** | [Русский](docs/README_ru.md) | [Deutsch](docs/README_de.md) | [Español](docs/README_es.md) | [Português](docs/README_pt.md)
 
-Controls the soundbar via its **native local HTTP API** — no cloud, no delays. Partially replaces the Klipsch Connect Plus app for day-to-day use.
+---
+
+Home Assistant custom integration for **Klipsch Flexus** soundbars — control via **native local HTTP API**, no cloud, no delays.
+
+### Supported Models
+
+| Model | Channels | Features |
+|-------|----------|----------|
+| **Flexus CORE 300** | 5.1.2 | Dirac Live, Dolby Atmos, 13 drivers |
+| **Flexus CORE 200** | 3.1.2 | Dolby Atmos up-firing |
+| **Flexus CORE 100** | 2.1 | Virtual Dolby Atmos |
 
 > The soundbar must be pre-configured via the official Klipsch Connect Plus app (Wi-Fi, firmware, speaker pairing, Dirac calibration). This integration handles ongoing control only.
 
@@ -58,14 +67,28 @@ Full UI translation in **7 languages**: English, Russian, German, Spanish, Frenc
 
 1. Open **HACS** > Integrations > search **Klipsch Flexus**
 2. Install and restart Home Assistant
-3. Go to **Settings** > Devices & Services > **Add Integration** > Klipsch Flexus
-4. Enter the soundbar's IP address
+3. The soundbar should be **automatically discovered** — check notifications
+4. Or go to **Settings** > Devices & Services > **Add Integration** > Klipsch Flexus
 
 ### Manual
 
 1. Copy `custom_components/klipsch_flexus/` to your HA `config/custom_components/` directory
 2. Restart Home Assistant
 3. Add the integration via Settings > Devices & Services
+
+## Auto-Discovery
+
+The soundbar is automatically discovered on your network via **mDNS / Zeroconf** (Google Cast protocol).
+
+When powered on, Home Assistant will detect the soundbar and display a notification:
+> **Klipsch Flexus CORE 300** found at `10.0.1.51`. Do you want to add this soundbar?
+
+**How it works:**
+- Soundbar announces itself as `Flexus-Core-*` via `_googlecast._tcp` mDNS service
+- Integration identifies the device by `md` (model) and `fn` (friendly name) TXT records
+- AirCast proxy devices are automatically filtered out
+
+If auto-discovery doesn't work (e.g. network isolation), you can always add the integration manually by entering the IP address.
 
 ## Configuration
 
