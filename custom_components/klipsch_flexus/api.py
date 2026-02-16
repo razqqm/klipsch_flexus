@@ -134,7 +134,10 @@ class KlipschAPI:
             "muted": (API_PATHS["mute"], lambda d: d[0].get("bool_", False)),
             "input": (API_PATHS["input"], lambda d: d[0].get("cinemaPhysicalAudioInput", "unknown")),
             "mode": (API_PATHS["mode"], lambda d: d[0].get("cinemaPostProcessorMode", "unknown")),
-            "night_mode": (API_PATHS["night"], lambda d: NIGHT_MODE_FROM_API.get(d[0].get("cinemaNightMode", "off"), "off")),
+            "night_mode": (
+                API_PATHS["night"],
+                lambda d: NIGHT_MODE_FROM_API.get(d[0].get("cinemaNightMode", "off"), "off"),
+            ),
             "dialog_mode": (API_PATHS["dialog"], lambda d: d[0].get("cinemaDialogMode", "off")),
             "bass": (API_PATHS["bass"], lambda d: d[0].get("i32_", 0)),
             "mid": (API_PATHS["mid"], lambda d: d[0].get("i32_", 0)),
