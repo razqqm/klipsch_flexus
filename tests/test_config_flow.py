@@ -9,7 +9,11 @@ from homeassistant import config_entries
 from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
-from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
+
+try:
+    from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
+except ImportError:  # HA < 2026.2
+    from homeassistant.components.zeroconf import ZeroconfServiceInfo
 
 from custom_components.klipsch_flexus.const import DOMAIN
 
