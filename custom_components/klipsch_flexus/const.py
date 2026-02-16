@@ -72,6 +72,7 @@ SOURCES = {
     "spdif": "SPDIF",
     "bluetooth": "Bluetooth",
     "googlecast": "Google Cast",
+    "airplay": "AirPlay",
 }
 SOURCES_REVERSE = {v: k for k, v in SOURCES.items()}
 

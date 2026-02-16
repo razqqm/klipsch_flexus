@@ -122,10 +122,10 @@ class KlipschMediaPlayer(CoordinatorEntity[KlipschCoordinator], MediaPlayerEntit
     # --- Optimistic update helper ---
 
     def _optimistic_update(self, **kwargs) -> None:
-        """Update coordinator data in-memory and push state to HA immediately."""
+        """Update coordinator data in-memory and push state to all entities."""
         if self.coordinator.data:
             self.coordinator.data.update(kwargs)
-            self.async_write_ha_state()
+            self.coordinator.async_set_updated_data(self.coordinator.data)
 
     @property
     def supported_features(self) -> MediaPlayerEntityFeature:

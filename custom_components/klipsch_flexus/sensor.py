@@ -79,9 +79,9 @@ class KlipschStatusSensor(CoordinatorEntity[KlipschCoordinator], SensorEntity):
         if not data.get("online"):
             return "offline"
         power = data.get("power", "unknown")
-        if power == "on":
-            return "on"
-        return "standby"
+        if power == "networkStandby":
+            return "standby"
+        return "on"
 
     @property
     def extra_state_attributes(self) -> dict:
