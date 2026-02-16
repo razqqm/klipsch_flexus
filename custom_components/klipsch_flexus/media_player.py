@@ -256,7 +256,7 @@ class KlipschMediaPlayer(CoordinatorEntity[KlipschCoordinator], MediaPlayerEntit
         self.coordinator.async_request_delayed_refresh()
 
     async def async_media_play(self) -> None:
-        await self.coordinator.api.media_control("pause")
+        await self.coordinator.api.media_control("play")
         self.coordinator.async_request_delayed_refresh()
 
     async def async_media_pause(self) -> None:
