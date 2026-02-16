@@ -1,5 +1,7 @@
 # Klipsch Flexus CORE 300
 
+**Language / Язык:** English | [Русский](README_ru.md)
+
 [![HACS Default](https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge)](https://hacs.xyz/)
 [![GitHub Release](https://img.shields.io/github/release/razqqm/klipsch_flexus.svg?style=for-the-badge)](https://github.com/razqqm/klipsch_flexus/releases)
 [![License](https://img.shields.io/github/license/razqqm/klipsch_flexus.svg?style=for-the-badge)](LICENSE)
@@ -45,10 +47,7 @@ Controls the soundbar via its **native local HTTP API** — no cloud, no delays.
 ### Diagnostics
 - **Response Time** — API poll duration in ms, request/failure counters
 - **Device Status** — On / Standby / Offline with decoder, input, sound mode info
-- **Download diagnostics** — full device state export (Settings → Devices → Klipsch Flexus → ⋮ → Download diagnostics)
-
-### Auto-Discovery
-The integration supports **SSDP auto-discovery** — if the soundbar is on the same network, Home Assistant will detect it automatically and offer to set it up.
+- **Download diagnostics** — full device state export (Settings > Devices > Klipsch Flexus > Download diagnostics)
 
 ### Translations
 Full UI translation in **7 languages**: English, Russian, German, Spanish, French, Italian, Portuguese. All entity names, states, and configuration screens are translated.
@@ -57,16 +56,16 @@ Full UI translation in **7 languages**: English, Russian, German, Spanish, Frenc
 
 ### HACS (recommended)
 
-1. Open **HACS** → Integrations → search **Klipsch Flexus**
+1. Open **HACS** > Integrations > search **Klipsch Flexus**
 2. Install and restart Home Assistant
-3. Go to **Settings** → Devices & Services → **Add Integration** → Klipsch Flexus
-4. Enter the soundbar's IP address (or accept auto-discovered device)
+3. Go to **Settings** > Devices & Services > **Add Integration** > Klipsch Flexus
+4. Enter the soundbar's IP address
 
 ### Manual
 
 1. Copy `custom_components/klipsch_flexus/` to your HA `config/custom_components/` directory
 2. Restart Home Assistant
-3. Add the integration via Settings → Devices & Services
+3. Add the integration via Settings > Devices & Services
 
 ## Configuration
 
@@ -77,7 +76,7 @@ Full UI translation in **7 languages**: English, Russian, German, Spanish, Frenc
 
 **Tip:** Assign a static IP / DHCP reservation to the soundbar for reliable operation.
 
-You can change the IP address later via **Reconfigure** (Settings → Devices → Klipsch Flexus → ⋮ → Reconfigure).
+You can change the IP address later via **Reconfigure** (Settings > Devices > Klipsch Flexus > Reconfigure).
 
 ## How It Works
 
@@ -93,7 +92,7 @@ The Klipsch Flexus has a **single-threaded HTTP server** that processes one requ
 | Mechanism | Description |
 |-----------|-------------|
 | Request serialization | All API calls go through `asyncio.Lock` — no concurrent requests |
-| Retry with backoff | Transient errors retried 2× with 0.5 s delay |
+| Retry with backoff | Transient errors retried 2x with 0.5 s delay |
 | Adaptive timeouts | 8 s reads, 10 s writes, 15 s power commands |
 | Graceful degradation | Failed reads fall back to last-known cached values |
 | Optimistic updates | UI updates instantly, then verified via delayed poll |
@@ -107,11 +106,11 @@ The Klipsch Flexus has a **single-threaded HTTP server** that processes one requ
 | Dialog Mode | Select | Config |
 | EQ Preset | Select | Config |
 | Dirac Filter | Select | Config |
-| Back Height / Left / Right | Number (×3) | Config |
+| Back Height / Left / Right | Number (x3) | Config |
 | Front Height | Number | Config |
-| Side Left / Right | Number (×2) | Config |
-| Subwoofer Wireless 1 / 2 | Number (×2) | Config |
-| Bass / Mid / Treble | Number (×3) | Config |
+| Side Left / Right | Number (x2) | Config |
+| Subwoofer Wireless 1 / 2 | Number (x2) | Config |
+| Bass / Mid / Treble | Number (x3) | Config |
 | Response Time | Sensor | Diagnostic |
 | Device Status | Sensor | Diagnostic |
 
@@ -123,7 +122,7 @@ The Klipsch Flexus has a **single-threaded HTTP server** that processes one requ
 |---------|----------|
 | Cannot connect | Check that the soundbar is on the same network. Try: `http://<IP>/api/getData?path=player:volume&roles=value` |
 | Entities unavailable | The Klipsch app may be polling simultaneously — close it and retry |
-| Slow updates | Increase poll interval in Options (Settings → Devices → Klipsch Flexus → Configure) |
+| Slow updates | Increase poll interval in Options (Settings > Devices > Klipsch Flexus > Configure) |
 | Integration not loading | Check Home Assistant logs for import errors. Ensure you're on HA 2024.4.0+ |
 
 ## Known Limitations
