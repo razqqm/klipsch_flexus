@@ -42,7 +42,7 @@ class KlipschChannelLevel(CoordinatorEntity[KlipschCoordinator], NumberEntity):
     ) -> None:
         super().__init__(coordinator)
         self._param = param
-        self._attr_name = name
+        self._attr_translation_key = param
         self._attr_icon = icon
         self._attr_unique_id = f"{entry.entry_id}_{param}"
         self._attr_device_info = {"identifiers": {(DOMAIN, entry.entry_id)}}

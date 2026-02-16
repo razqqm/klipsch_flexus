@@ -26,7 +26,7 @@ class KlipschResponseTimeSensor(CoordinatorEntity[KlipschCoordinator], SensorEnt
     """API response time (last request)."""
 
     _attr_has_entity_name = True
-    _attr_name = "Status: Response Time"
+    _attr_translation_key = "response_time"
     _attr_icon = "mdi:timer-outline"
     _attr_native_unit_of_measurement = UnitOfTime.MILLISECONDS
     _attr_state_class = SensorStateClass.MEASUREMENT
@@ -59,7 +59,7 @@ class KlipschStatusSensor(CoordinatorEntity[KlipschCoordinator], SensorEntity):
     """Device online/offline status with decoder info."""
 
     _attr_has_entity_name = True
-    _attr_name = "Status: Device"
+    _attr_translation_key = "device_status"
     _attr_icon = "mdi:soundbar"
     _attr_entity_category = EntityCategory.DIAGNOSTIC
 

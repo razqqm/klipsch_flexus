@@ -36,7 +36,7 @@ class KlipschNightModeSelect(CoordinatorEntity[KlipschCoordinator], SelectEntity
     """Night mode selector."""
 
     _attr_has_entity_name = True
-    _attr_name = "1. Night Mode"
+    _attr_translation_key = "night_mode"
     _attr_icon = "mdi:weather-night"
     _attr_entity_category = EntityCategory.CONFIG
 
@@ -68,7 +68,7 @@ class KlipschDialogModeSelect(CoordinatorEntity[KlipschCoordinator], SelectEntit
     """Dialog mode selector."""
 
     _attr_has_entity_name = True
-    _attr_name = "2. Dialog Mode"
+    _attr_translation_key = "dialog_mode"
     _attr_icon = "mdi:account-voice"
     _attr_entity_category = EntityCategory.CONFIG
 
@@ -100,7 +100,7 @@ class KlipschEqPresetSelect(CoordinatorEntity[KlipschCoordinator], SelectEntity)
     """EQ preset selector."""
 
     _attr_has_entity_name = True
-    _attr_name = "3. EQ Preset"
+    _attr_translation_key = "eq_preset"
     _attr_icon = "mdi:tune-variant"
     _attr_entity_category = EntityCategory.CONFIG
 
@@ -132,7 +132,7 @@ class KlipschDiracSelect(CoordinatorEntity[KlipschCoordinator], SelectEntity):
     """Dirac room correction filter selector."""
 
     _attr_has_entity_name = True
-    _attr_name = "4. Dirac Filter"
+    _attr_translation_key = "dirac"
     _attr_icon = "mdi:tune"
     _attr_entity_category = EntityCategory.CONFIG
 
