@@ -1,0 +1,48 @@
+name: Bug Report
+description: Report a bug with the Klipsch Flexus integration
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Please fill in the details below.
+
+  - type: input
+    id: version
+    attributes:
+      label: Integration version
+      placeholder: "v1.3.0"
+    validations:
+      required: true
+
+  - type: input
+    id: ha_version
+    attributes:
+      label: Home Assistant version
+      placeholder: "2024.12.0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      placeholder: What happened? What did you expect?
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Copy logs from Settings → System → Logs (filter by "klipsch")
+      render: shell
+
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics
+      description: |
+        Download from Settings → Devices → Klipsch Flexus → "Download diagnostics"
+        Paste the JSON here (IP is auto-redacted).
+      render: json
