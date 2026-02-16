@@ -11,11 +11,9 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import (
     DIALOG_MODES,
-    DIALOG_MODES_REVERSE,
     DOMAIN,
     EQ_PRESETS,
     NIGHT_MODES,
-    NIGHT_MODES_REVERSE,
 )
 from .coordinator import KlipschCoordinator
 
@@ -43,22 +41,19 @@ class KlipschNightModeSelect(CoordinatorEntity[KlipschCoordinator], SelectEntity
         super().__init__(coordinator)
         self._attr_unique_id = f"{entry.entry_id}_night_mode"
         self._attr_device_info = {"identifiers": {(DOMAIN, entry.entry_id)}}
-        self._attr_options = list(NIGHT_MODES.values())
+        self._attr_options = NIGHT_MODES
 
     @property
     def current_option(self) -> str | None:
         data = self.coordinator.data or {}
         if not data.get("online"):
             return None
-        raw = data.get("night_mode", "off")
-        return NIGHT_MODES.get(raw, raw)
+        return data.get("night_mode", "off")
 
     async def async_select_option(self, option: str) -> None:
-        raw = NIGHT_MODES_REVERSE.get(option, option)
-        await self.coordinator.api.set_night_mode(raw)
-        # Optimistic update
+        await self.coordinator.api.set_night_mode(option)
         if self.coordinator.data:
-            self.coordinator.data["night_mode"] = raw
+            self.coordinator.data["night_mode"] = option
             self.async_write_ha_state()
         self.coordinator.async_request_delayed_refresh()
 
@@ -75,22 +70,19 @@ class KlipschDialogModeSelect(CoordinatorEntity[KlipschCoordinator], SelectEntit
         super().__init__(coordinator)
         self._attr_unique_id = f"{entry.entry_id}_dialog_mode"
         self._attr_device_info = {"identifiers": {(DOMAIN, entry.entry_id)}}
-        self._attr_options = list(DIALOG_MODES.values())
+        self._attr_options = DIALOG_MODES
 
     @property
     def current_option(self) -> str | None:
         data = self.coordinator.data or {}
         if not data.get("online"):
             return None
-        raw = data.get("dialog_mode", "off")
-        return DIALOG_MODES.get(raw, raw)
+        return data.get("dialog_mode", "off")
 
     async def async_select_option(self, option: str) -> None:
-        raw = DIALOG_MODES_REVERSE.get(option, option)
-        await self.coordinator.api.set_dialog_mode(raw)
-        # Optimistic update
+        await self.coordinator.api.set_dialog_mode(option)
         if self.coordinator.data:
-            self.coordinator.data["dialog_mode"] = raw
+            self.coordinator.data["dialog_mode"] = option
             self.async_write_ha_state()
         self.coordinator.async_request_delayed_refresh()
 
@@ -107,22 +99,19 @@ class KlipschEqPresetSelect(CoordinatorEntity[KlipschCoordinator], SelectEntity)
         super().__init__(coordinator)
         self._attr_unique_id = f"{entry.entry_id}_eq_preset"
         self._attr_device_info = {"identifiers": {(DOMAIN, entry.entry_id)}}
-        self._attr_options = [p.title() for p in EQ_PRESETS]
+        self._attr_options = EQ_PRESETS
 
     @property
     def current_option(self) -> str | None:
         data = self.coordinator.data or {}
         if not data.get("online"):
             return None
-        raw = data.get("eq_preset", "flat")
-        return raw.title()
+        return data.get("eq_preset", "flat")
 
     async def async_select_option(self, option: str) -> None:
-        raw = option.lower()
-        await self.coordinator.api.set_eq_preset(raw)
-        # Optimistic update
+        await self.coordinator.api.set_eq_preset(option)
         if self.coordinator.data:
-            self.coordinator.data["eq_preset"] = raw
+            self.coordinator.data["eq_preset"] = option
             self.async_write_ha_state()
         self.coordinator.async_request_delayed_refresh()
 

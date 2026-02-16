@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from homeassistant.components.sensor import SensorEntity, SensorStateClass
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity, SensorStateClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory, UnitOfTime
 from homeassistant.core import HomeAssistant
@@ -62,6 +62,8 @@ class KlipschStatusSensor(CoordinatorEntity[KlipschCoordinator], SensorEntity):
     _attr_has_entity_name = True
     _attr_translation_key = "device_status"
     _attr_icon = "mdi:soundbar"
+    _attr_device_class = SensorDeviceClass.ENUM
+    _attr_options = ["offline", "on", "standby"]
     _attr_entity_category = EntityCategory.DIAGNOSTIC
 
     def __init__(self, coordinator: KlipschCoordinator, entry: ConfigEntry) -> None:
@@ -73,11 +75,11 @@ class KlipschStatusSensor(CoordinatorEntity[KlipschCoordinator], SensorEntity):
     def native_value(self) -> str:
         data = self.coordinator.data or {}
         if not data.get("online"):
-            return "Offline"
+            return "offline"
         power = data.get("power", "unknown")
         if power == "on":
-            return "On"
-        return "Standby"
+            return "on"
+        return "standby"
 
     @property
     def extra_state_attributes(self) -> dict:
