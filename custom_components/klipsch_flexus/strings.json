@@ -97,7 +97,8 @@
           "hdmi1": "HDMI",
           "spdif": "SPDIF",
           "bluetooth": "Bluetooth",
-          "googlecast": "Google Cast"
+          "googlecast": "Google Cast",
+          "airplay": "AirPlay"
         }
       },
       "active_sound_mode": {
