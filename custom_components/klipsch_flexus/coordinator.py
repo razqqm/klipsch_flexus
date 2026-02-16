@@ -4,11 +4,11 @@ from __future__ import annotations
 from datetime import timedelta
 import logging
 
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .api import KlipschAPI
-from .const import DOMAIN, SCAN_INTERVAL_SECONDS
+from .const import DOMAIN, SCAN_INTERVAL_SECONDS, COMMAND_REFRESH_DELAY
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -53,3 +53,14 @@ class KlipschCoordinator(DataUpdateCoordinator[dict]):
             _LOGGER.debug("Failed to fetch player data")
 
         return status
+
+    @callback
+    def async_request_delayed_refresh(self, delay: float = COMMAND_REFRESH_DELAY) -> None:
+        """Schedule a refresh after delay (non-blocking).
+
+        Gives the soundbar time to process a command before we poll its state.
+        """
+        self.hass.loop.call_later(
+            delay,
+            lambda: self.hass.async_create_task(self.async_request_refresh()),
+        )

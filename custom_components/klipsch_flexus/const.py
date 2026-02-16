@@ -5,6 +5,18 @@ DEFAULT_PORT = 80
 SCAN_INTERVAL_SECONDS = 15
 CONF_SCAN_INTERVAL = "scan_interval"
 
+# API timeouts (seconds) — soundbar is single-threaded and slow
+API_TIMEOUT_READ = 8
+API_TIMEOUT_WRITE = 10
+API_TIMEOUT_POWER = 15  # device needs time to wake up
+
+# Retry settings
+API_RETRIES = 2
+API_RETRY_DELAY = 0.5  # seconds between retries
+
+# Delay before refresh after command (let device process)
+COMMAND_REFRESH_DELAY = 1.0
+
 # API paths
 API_PATHS = {
     "volume": "player:volume",
@@ -23,9 +35,31 @@ API_PATHS = {
     "dirac": "dirac:/activeFilter",
     "sub_wired": "settings:/cinema/dsp/wiredSubwooferVolume",
     "sub_wireless": "settings:/cinema/dsp/wirelessSubwoofersVolume",
+    # Surround channel levels (Dolby Atmos)
+    "back_height": "settings:/cinema/dsp/backHeightVolume",
+    "back_left": "settings:/cinema/dsp/backLeftVolume",
+    "back_right": "settings:/cinema/dsp/backRightVolume",
+    "front_height": "settings:/cinema/dsp/frontHeightVolume",
+    "side_left": "settings:/cinema/dsp/sideLeftVolume",
+    "side_right": "settings:/cinema/dsp/sideRightVolume",
     "player": "player:player/data",
     "player_control": "player:player/control",
 }
+
+# Channel level keys (bass/mid/treble + surround speakers + subwoofers)
+CHANNEL_LEVELS = [
+    ("bass",         "Bass",              "mdi:speaker"),
+    ("mid",          "Mid",               "mdi:tune"),
+    ("treble",       "Treble",            "mdi:music-clef-treble"),
+    ("front_height", "Front Height",      "mdi:speaker"),
+    ("side_left",    "Side Left",         "mdi:speaker"),
+    ("side_right",   "Side Right",        "mdi:speaker"),
+    ("back_left",    "Back Left",         "mdi:speaker"),
+    ("back_right",   "Back Right",        "mdi:speaker"),
+    ("back_height",  "Back Height",       "mdi:speaker"),
+    ("sub_wired",    "Subwoofer Wired",   "mdi:subwoofer"),
+    ("sub_wireless", "Subwoofer Wireless", "mdi:subwoofer"),
+]
 
 # Source list (input names → display names)
 SOURCES = {
