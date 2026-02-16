@@ -2,13 +2,10 @@
 
 from __future__ import annotations
 
-from urllib.parse import urlparse
-
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_HOST
 from homeassistant.core import callback
-from homeassistant.helpers.service_info.ssdp import SsdpServiceInfo
 
 from .api import KlipschAPI
 from .const import CONF_SCAN_INTERVAL, DOMAIN, SCAN_INTERVAL_SECONDS
@@ -19,40 +16,10 @@ class KlipschFlexusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
 
-    def __init__(self) -> None:
-        """Initialize."""
-        self._discovered_host: str | None = None
-
     @staticmethod
     @callback
     def async_get_options_flow(config_entry):
         return KlipschOptionsFlow(config_entry)
-
-    async def async_step_ssdp(self, discovery_info: SsdpServiceInfo) -> config_entries.ConfigFlowResult:
-        """Handle SSDP discovery."""
-        host = urlparse(discovery_info.ssdp_location or "").hostname
-        if not host:
-            return self.async_abort(reason="no_host")
-
-        await self.async_set_unique_id(host)
-        self._abort_if_unique_id_configured(updates={CONF_HOST: host})
-
-        self._discovered_host = host
-        self.context["title_placeholders"] = {"host": host}
-        return await self.async_step_confirm()
-
-    async def async_step_confirm(self, user_input=None) -> config_entries.ConfigFlowResult:
-        """Confirm SSDP discovery."""
-        if user_input is not None:
-            return self.async_create_entry(
-                title=f"Klipsch Flexus ({self._discovered_host})",
-                data={CONF_HOST: self._discovered_host},
-            )
-
-        return self.async_show_form(
-            step_id="confirm",
-            description_placeholders={"host": self._discovered_host},
-        )
 
     async def async_step_user(self, user_input=None):
         errors = {}

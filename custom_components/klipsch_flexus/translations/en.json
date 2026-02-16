@@ -8,10 +8,6 @@
           "host": "IP Address"
         }
       },
-      "confirm": {
-        "title": "Klipsch Flexus Discovered",
-        "description": "Found Klipsch Flexus soundbar at **{host}**. Add it?"
-      },
       "reconfigure": {
         "title": "Reconfigure Klipsch Flexus",
         "description": "Update the IP address of your soundbar.",
@@ -24,8 +20,7 @@
       "cannot_connect": "Cannot connect to device. Check the IP address."
     },
     "abort": {
-      "already_configured": "This device is already configured.",
-      "no_host": "Could not determine device IP address."
+      "already_configured": "This device is already configured."
     }
   },
   "options": {
@@ -65,23 +60,49 @@
           "vocal": "Vocal"
         }
       },
-      "dirac": { "name": "4. Dirac Filter" }
+      "dirac": {
+        "name": "4. Dirac Filter"
+      }
     },
     "number": {
-      "back_height": { "name": "Channel: Back Height" },
-      "back_left": { "name": "Channel: Back Left" },
-      "back_right": { "name": "Channel: Back Right" },
-      "front_height": { "name": "Channel: Front Height" },
-      "side_left": { "name": "Channel: Side Left" },
-      "side_right": { "name": "Channel: Side Right" },
-      "sub_wired": { "name": "Channel: Subwoofer Wireless 1" },
-      "sub_wireless": { "name": "Channel: Subwoofer Wireless 2" },
-      "bass": { "name": "Tone: Bass" },
-      "mid": { "name": "Tone: Mid" },
-      "treble": { "name": "Tone: Treble" }
+      "back_height": {
+        "name": "Channel: Back Height"
+      },
+      "back_left": {
+        "name": "Channel: Back Left"
+      },
+      "back_right": {
+        "name": "Channel: Back Right"
+      },
+      "front_height": {
+        "name": "Channel: Front Height"
+      },
+      "side_left": {
+        "name": "Channel: Side Left"
+      },
+      "side_right": {
+        "name": "Channel: Side Right"
+      },
+      "sub_wired": {
+        "name": "Channel: Subwoofer Wireless 1"
+      },
+      "sub_wireless": {
+        "name": "Channel: Subwoofer Wireless 2"
+      },
+      "bass": {
+        "name": "Tone: Bass"
+      },
+      "mid": {
+        "name": "Tone: Mid"
+      },
+      "treble": {
+        "name": "Tone: Treble"
+      }
     },
     "sensor": {
-      "response_time": { "name": "Status: Response Time" },
+      "response_time": {
+        "name": "Status: Response Time"
+      },
       "device_status": {
         "name": "Status: Device",
         "state": {
