@@ -44,11 +44,13 @@ class KlipschMediaPlayer(CoordinatorEntity[KlipschCoordinator], MediaPlayerEntit
         super().__init__(coordinator)
         self._entry = entry
         self._attr_unique_id = f"{entry.entry_id}_media_player"
+        host = entry.data.get("host", "")
         self._attr_device_info = {
             "identifiers": {(DOMAIN, entry.entry_id)},
             "name": "Klipsch Flexus CORE 300",
             "manufacturer": "Klipsch",
             "model": "Flexus CORE 300",
+            "configuration_url": f"http://{host}",
         }
         self._attr_source_list = list(SOURCES.values())
         self._attr_sound_mode_list = SOUND_MODES

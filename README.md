@@ -1,8 +1,13 @@
 # Klipsch Flexus CORE 300
 
-[![HACS Custom](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://hacs.xyz/)
+[![HACS Default](https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge)](https://hacs.xyz/)
+[![GitHub Release](https://img.shields.io/github/release/razqqm/klipsch_flexus.svg?style=for-the-badge)](https://github.com/razqqm/klipsch_flexus/releases)
+[![License](https://img.shields.io/github/license/razqqm/klipsch_flexus.svg?style=for-the-badge)](LICENSE)
+
 [![Validate](https://github.com/razqqm/klipsch_flexus/actions/workflows/validate.yaml/badge.svg)](https://github.com/razqqm/klipsch_flexus/actions/workflows/validate.yaml)
 [![Hassfest](https://github.com/razqqm/klipsch_flexus/actions/workflows/hassfest.yaml/badge.svg)](https://github.com/razqqm/klipsch_flexus/actions/workflows/hassfest.yaml)
+[![CI](https://github.com/razqqm/klipsch_flexus/actions/workflows/ci.yaml/badge.svg)](https://github.com/razqqm/klipsch_flexus/actions/workflows/ci.yaml)
+[![Ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
 
 Home Assistant integration for **Klipsch Flexus CORE 300** (5.1.2-Channel Dolby Atmos Sound Bar).
 
@@ -21,12 +26,12 @@ Controls the soundbar via its native local HTTP API — no cloud, no delays.
 - Media metadata — title, artist, album, artwork, source app
 
 ### Channel Levels (Number Sliders, -6 to +6)
-- **Bass / Mid / Treble** — main EQ channels
+- **Bass / Mid / Treble** — tone controls
 - **Front Height** — Dolby Atmos height channel
 - **Side Left / Side Right** — surround sides
 - **Back Left / Back Right** — surround rears
 - **Back Height** — rear Atmos height channel
-- **Subwoofer Wired / Subwoofer Wireless** — sub levels
+- **Subwoofer Wireless 1 / 2** — subwoofer levels
 
 ### Audio Settings (Select Entities)
 - **EQ Preset** — Flat, Bass, Rock, Vocal
@@ -34,11 +39,10 @@ Controls the soundbar via its native local HTTP API — no cloud, no delays.
 - **Dialog Mode** — Off / Level 1 / Level 2 / Level 3
 - **Dirac Live** — room correction filter (filters auto-discovered from device)
 
-### Device Attributes
-The media player entity exposes these as state attributes:
-`decoder`, `eq_preset`, `night_mode`, `dialog_mode`, `bass`, `mid`, `treble`,
-`front_height`, `side_left`, `side_right`, `back_left`, `back_right`, `back_height`,
-`sub_wired`, `sub_wireless`, `dirac_filter`, `source_app`
+### Diagnostics
+- **Response Time** — API poll duration in ms with request counters
+- **Device Status** — On / Standby / Offline with decoder and input info
+- **Download diagnostics** — full device state from Settings → Devices → Klipsch Flexus
 
 ## Prerequisites
 
@@ -49,18 +53,15 @@ The media player entity exposes these as state attributes:
 > speaker pairing, Dirac calibration, etc.).
 >
 > The integration does NOT replace the official app — it extends control into Home Assistant.
-> Keep the Klipsch Stream app installed for initial setup and advanced configuration.
 
 ## Installation
 
 ### HACS (recommended)
 
-1. Open HACS → Integrations → **Custom repositories**
-2. Add `https://github.com/razqqm/klipsch_flexus` (type: Integration)
-3. Search for **Klipsch Flexus** and install
-4. Restart Home Assistant
-5. Go to Settings → Devices & Services → **Add Integration** → Klipsch Flexus
-6. Enter the soundbar's IP address
+1. Open HACS → Integrations → search **Klipsch Flexus**
+2. Install and restart Home Assistant
+3. Go to Settings → Devices & Services → **Add Integration** → Klipsch Flexus
+4. Enter the soundbar's IP address
 
 ### Manual
 
@@ -73,48 +74,66 @@ The media player entity exposes these as state attributes:
 | Parameter | Default | Description |
 |-----------|---------|-------------|
 | Host | — | IP address of the soundbar (required) |
-| Poll interval | 15 s | Status polling interval (configurable via Options) |
+| Poll interval | 15 s | Configurable via Options flow (5–120 s) |
 
 **Tip:** Assign a static IP / DHCP reservation to the soundbar for reliable operation.
+
+You can change the IP address later via **Reconfigure** (Settings → Devices → Klipsch Flexus → Configure).
 
 ## How It Works
 
 The soundbar exposes a local HTTP API on port 80 with endpoints:
 - `GET /api/getData` — read device parameters
 - `GET /api/setData` — write device parameters
-- `GET /api/getRows` — list structured data (e.g. Dirac filters)
+- `GET /api/getRows` — list structured data (Dirac filters)
 
 ### Slow Device Handling
 
 The Klipsch Flexus has a **single-threaded HTTP server** that can only process one request at a time.
 This integration includes several mechanisms to ensure reliable operation:
 
-- **Request serialization** — all API calls are serialized via `asyncio.Lock` to prevent collisions
+- **Request serialization** — all API calls are serialized via `asyncio.Lock`
 - **Retry with backoff** — transient errors are retried (2 attempts, 0.5 s delay)
 - **Adaptive timeouts** — 8 s for reads, 10 s for writes, 15 s for power commands
-- **Graceful degradation** — if individual parameters fail to read, last-known cached values are used
-- **Optimistic updates** — UI reflects changes immediately, then confirms via delayed poll
+- **Graceful degradation** — failed parameter reads fall back to last-known cached values
+- **Optimistic updates** — UI reflects changes immediately, confirmed via delayed poll
 
 ## Entities Created
 
-| Entity | Type | Description |
-|--------|------|-------------|
-| `media_player.klipsch_flexus_core_300` | Media Player | Main control entity |
-| `number.*_bass` | Number | Bass level (-6 to +6) |
-| `number.*_mid` | Number | Mid level (-6 to +6) |
-| `number.*_treble` | Number | Treble level (-6 to +6) |
-| `number.*_front_height` | Number | Front height channel (-6 to +6) |
-| `number.*_side_left` | Number | Side left channel (-6 to +6) |
-| `number.*_side_right` | Number | Side right channel (-6 to +6) |
-| `number.*_back_left` | Number | Back left channel (-6 to +6) |
-| `number.*_back_right` | Number | Back right channel (-6 to +6) |
-| `number.*_back_height` | Number | Back height channel (-6 to +6) |
-| `number.*_sub_wired` | Number | Wired subwoofer level (-6 to +6) |
-| `number.*_sub_wireless` | Number | Wireless subwoofer level (-6 to +6) |
-| `select.*_night_mode` | Select | Night mode |
-| `select.*_dialog_mode` | Select | Dialog enhancement mode |
-| `select.*_eq_preset` | Select | EQ preset |
-| `select.*_dirac` | Select | Dirac Live filter |
+| Entity | Type | Category | Description |
+|--------|------|----------|-------------|
+| `media_player.klipsch_flexus_core_300` | Media Player | — | Main control entity |
+| `1. Night Mode` | Select | Config | Night mode on/off |
+| `2. Dialog Mode` | Select | Config | Dialog enhancement level |
+| `3. EQ Preset` | Select | Config | Equalizer preset |
+| `4. Dirac Filter` | Select | Config | Dirac Live room correction |
+| `Channel: Back Height` | Number | Config | Back height level (-6..+6) |
+| `Channel: Back Left` | Number | Config | Back left level (-6..+6) |
+| `Channel: Back Right` | Number | Config | Back right level (-6..+6) |
+| `Channel: Front Height` | Number | Config | Front height level (-6..+6) |
+| `Channel: Side Left` | Number | Config | Side left level (-6..+6) |
+| `Channel: Side Right` | Number | Config | Side right level (-6..+6) |
+| `Channel: Subwoofer Wireless 1` | Number | Config | Sub 1 level (-6..+6) |
+| `Channel: Subwoofer Wireless 2` | Number | Config | Sub 2 level (-6..+6) |
+| `Tone: Bass` | Number | Config | Bass level (-6..+6) |
+| `Tone: Mid` | Number | Config | Mid level (-6..+6) |
+| `Tone: Treble` | Number | Config | Treble level (-6..+6) |
+| `Status: Response Time` | Sensor | Diagnostic | API poll time in ms |
+| `Status: Device` | Sensor | Diagnostic | On / Standby / Offline |
+
+## Troubleshooting
+
+- **Cannot connect** — check that the soundbar is on the same network and responds to `http://<IP>/api/getData?path=player:volume&roles=value`
+- **Entities unavailable** — the soundbar is single-threaded; if the Klipsch app is polling simultaneously, HA may time out. Close the app and retry
+- **Slow updates** — increase the poll interval in Options if the soundbar struggles
+- **Download diagnostics** — Settings → Devices → Klipsch Flexus → 3-dot menu → Download diagnostics. Attach to bug reports
+
+## Known Limitations
+
+- Only one soundbar per integration entry (add multiple via separate entries)
+- No support for multi-room / wireless surround speaker group management (use Klipsch Stream app)
+- AirPlay and Cast protocols are not used — only the native HTTP API on port 80
+- The soundbar must be set up initially via the official Klipsch Stream app
 
 ## License
 
