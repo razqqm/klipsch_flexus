@@ -57,6 +57,29 @@ class KlipschMediaPlayer(CoordinatorEntity[KlipschCoordinator], MediaPlayerEntit
         data = self.coordinator.data or {}
         return data.get("player", {})
 
+    def _dirac_filter_name(self) -> str:
+        """Resolve Dirac filter ID to human name."""
+        data = self.coordinator.data or {}
+        dirac_id = data.get("dirac", -1)
+        for f in self.coordinator.dirac_filters:
+            if f["id"] == dirac_id:
+                return f["name"]
+        return "off" if dirac_id == -1 else str(dirac_id)
+
+    def _source_app_name(self) -> str | None:
+        """Get source app name from player metadata."""
+        player = self._player_data()
+        meta = player.get("trackRoles", {}).get("mediaData", {}).get("metaData", {})
+        return meta.get("externalAppName")
+
+    # --- Optimistic update helper ---
+
+    def _optimistic_update(self, **kwargs) -> None:
+        """Update coordinator data in-memory and push state to HA immediately."""
+        if self.coordinator.data:
+            self.coordinator.data.update(kwargs)
+            self.async_write_ha_state()
+
     @property
     def supported_features(self) -> MediaPlayerEntityFeature:
         features = _BASE_FEATURES
@@ -162,63 +185,97 @@ class KlipschMediaPlayer(CoordinatorEntity[KlipschCoordinator], MediaPlayerEntit
         data = self.coordinator.data or {}
         if not data.get("online"):
             return {}
-        attrs = {"decoder": data.get("decoder", "unknown")}
-        player = self._player_data()
-        meta = player.get("trackRoles", {}).get("mediaData", {}).get("metaData", {})
-        app = meta.get("externalAppName")
-        if app:
-            attrs["source_app"] = app
+        attrs = {
+            # Audio processing
+            "decoder": data.get("decoder", "unknown"),
+            "eq_preset": data.get("eq_preset", "unknown"),
+            "night_mode": data.get("night_mode", "off"),
+            "dialog_mode": data.get("dialog_mode", "off"),
+            # Channel levels
+            "bass": data.get("bass", 0),
+            "mid": data.get("mid", 0),
+            "treble": data.get("treble", 0),
+            # Surround channels
+            "front_height": data.get("front_height", 0),
+            "side_left": data.get("side_left", 0),
+            "side_right": data.get("side_right", 0),
+            "back_left": data.get("back_left", 0),
+            "back_right": data.get("back_right", 0),
+            "back_height": data.get("back_height", 0),
+            # Subwoofer
+            "sub_wired": data.get("sub_wired", 0),
+            "sub_wireless": data.get("sub_wireless", 0),
+            # Dirac
+            "dirac_filter": self._dirac_filter_name(),
+        }
+        # Source app (only when available)
+        source_app = self._source_app_name()
+        if source_app:
+            attrs["source_app"] = source_app
         return attrs
 
+    # --- Commands with optimistic updates ---
+
     async def async_set_volume_level(self, volume: float) -> None:
-        await self.coordinator.api.set_volume(round(volume * 100))
-        await self.coordinator.async_request_refresh()
+        level = round(volume * 100)
+        await self.coordinator.api.set_volume(level)
+        self._optimistic_update(volume=level)
+        self.coordinator.async_request_delayed_refresh()
 
     async def async_volume_up(self) -> None:
         data = self.coordinator.data or {}
         current = data.get("volume", 0)
-        await self.coordinator.api.set_volume(min(current + 5, 100))
-        await self.coordinator.async_request_refresh()
+        new_level = min(current + 5, 100)
+        await self.coordinator.api.set_volume(new_level)
+        self._optimistic_update(volume=new_level)
+        self.coordinator.async_request_delayed_refresh()
 
     async def async_volume_down(self) -> None:
         data = self.coordinator.data or {}
         current = data.get("volume", 0)
-        await self.coordinator.api.set_volume(max(current - 5, 0))
-        await self.coordinator.async_request_refresh()
+        new_level = max(current - 5, 0)
+        await self.coordinator.api.set_volume(new_level)
+        self._optimistic_update(volume=new_level)
+        self.coordinator.async_request_delayed_refresh()
 
     async def async_mute_volume(self, mute: bool) -> None:
         await self.coordinator.api.set_mute(mute)
-        await self.coordinator.async_request_refresh()
+        self._optimistic_update(muted=mute)
+        self.coordinator.async_request_delayed_refresh()
 
     async def async_select_source(self, source: str) -> None:
         raw = SOURCES_REVERSE.get(source, source)
         await self.coordinator.api.set_input(raw)
-        await self.coordinator.async_request_refresh()
+        self._optimistic_update(input=raw)
+        self.coordinator.async_request_delayed_refresh()
 
     async def async_select_sound_mode(self, sound_mode: str) -> None:
         await self.coordinator.api.set_sound_mode(sound_mode)
-        await self.coordinator.async_request_refresh()
+        self._optimistic_update(mode=sound_mode)
+        self.coordinator.async_request_delayed_refresh()
 
     async def async_media_play(self) -> None:
         await self.coordinator.api.media_control("pause")
-        await self.coordinator.async_request_refresh()
+        self.coordinator.async_request_delayed_refresh()
 
     async def async_media_pause(self) -> None:
         await self.coordinator.api.media_control("pause")
-        await self.coordinator.async_request_refresh()
+        self.coordinator.async_request_delayed_refresh()
 
     async def async_media_next_track(self) -> None:
         await self.coordinator.api.media_control("next")
-        await self.coordinator.async_request_refresh()
+        self.coordinator.async_request_delayed_refresh()
 
     async def async_media_previous_track(self) -> None:
         await self.coordinator.api.media_control("previous")
-        await self.coordinator.async_request_refresh()
+        self.coordinator.async_request_delayed_refresh()
 
     async def async_turn_on(self) -> None:
         await self.coordinator.api.set_power("online")
-        await self.coordinator.async_request_refresh()
+        self._optimistic_update(power="online")
+        self.coordinator.async_request_delayed_refresh(delay=3.0)
 
     async def async_turn_off(self) -> None:
         await self.coordinator.api.set_power("networkStandby")
-        await self.coordinator.async_request_refresh()
+        self._optimistic_update(power="networkStandby")
+        self.coordinator.async_request_delayed_refresh(delay=3.0)

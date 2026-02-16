@@ -57,7 +57,11 @@ class KlipschNightModeSelect(CoordinatorEntity[KlipschCoordinator], SelectEntity
     async def async_select_option(self, option: str) -> None:
         raw = NIGHT_MODES_REVERSE.get(option, option)
         await self.coordinator.api.set_night_mode(raw)
-        await self.coordinator.async_request_refresh()
+        # Optimistic update
+        if self.coordinator.data:
+            self.coordinator.data["night_mode"] = raw
+            self.async_write_ha_state()
+        self.coordinator.async_request_delayed_refresh()
 
 
 class KlipschDialogModeSelect(CoordinatorEntity[KlipschCoordinator], SelectEntity):
@@ -85,7 +89,11 @@ class KlipschDialogModeSelect(CoordinatorEntity[KlipschCoordinator], SelectEntit
     async def async_select_option(self, option: str) -> None:
         raw = DIALOG_MODES_REVERSE.get(option, option)
         await self.coordinator.api.set_dialog_mode(raw)
-        await self.coordinator.async_request_refresh()
+        # Optimistic update
+        if self.coordinator.data:
+            self.coordinator.data["dialog_mode"] = raw
+            self.async_write_ha_state()
+        self.coordinator.async_request_delayed_refresh()
 
 
 class KlipschEqPresetSelect(CoordinatorEntity[KlipschCoordinator], SelectEntity):
@@ -111,8 +119,13 @@ class KlipschEqPresetSelect(CoordinatorEntity[KlipschCoordinator], SelectEntity)
         return raw.title()
 
     async def async_select_option(self, option: str) -> None:
-        await self.coordinator.api.set_eq_preset(option.lower())
-        await self.coordinator.async_request_refresh()
+        raw = option.lower()
+        await self.coordinator.api.set_eq_preset(raw)
+        # Optimistic update
+        if self.coordinator.data:
+            self.coordinator.data["eq_preset"] = raw
+            self.async_write_ha_state()
+        self.coordinator.async_request_delayed_refresh()
 
 
 class KlipschDiracSelect(CoordinatorEntity[KlipschCoordinator], SelectEntity):
@@ -154,4 +167,8 @@ class KlipschDiracSelect(CoordinatorEntity[KlipschCoordinator], SelectEntity):
     async def async_select_option(self, option: str) -> None:
         filter_id = self._dirac_map.get(option, -1)
         await self.coordinator.api.set_dirac(filter_id)
-        await self.coordinator.async_request_refresh()
+        # Optimistic update
+        if self.coordinator.data:
+            self.coordinator.data["dirac"] = filter_id
+            self.async_write_ha_state()
+        self.coordinator.async_request_delayed_refresh()

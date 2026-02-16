@@ -1,17 +1,30 @@
 """Klipsch Flexus HTTP API client."""
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 from urllib.parse import quote
 
 import aiohttp
 
+from .const import (
+    API_TIMEOUT_READ,
+    API_TIMEOUT_WRITE,
+    API_TIMEOUT_POWER,
+    API_RETRIES,
+    API_RETRY_DELAY,
+)
+
 _LOGGER = logging.getLogger(__name__)
 
 
 class KlipschAPI:
-    """Client for Klipsch Flexus native HTTP API."""
+    """Client for Klipsch Flexus native HTTP API.
+
+    The soundbar is single-threaded — all requests are serialized via asyncio.Lock
+    to prevent collisions between polling and commands.
+    """
 
     def __init__(self, host: str, port: int = 80, session: aiohttp.ClientSession | None = None) -> None:
         self._host = host
@@ -19,6 +32,8 @@ class KlipschAPI:
         self._base = f"http://{host}:{port}"
         self._session = session
         self._own_session = session is None
+        self._lock = asyncio.Lock()
+        self._last_status: dict = {}
 
     async def _ensure_session(self) -> aiohttp.ClientSession:
         if self._session is None or self._session.closed:
@@ -30,81 +45,122 @@ class KlipschAPI:
         if self._own_session and self._session and not self._session.closed:
             await self._session.close()
 
-    async def get_data(self, path: str) -> list:
-        """GET /api/getData?path={path}&roles=value."""
+    async def _request_with_retry(
+        self,
+        request_func,
+        retries: int = API_RETRIES,
+        delay: float = API_RETRY_DELAY,
+    ):
+        """Execute HTTP request with retry on transient errors."""
+        for attempt in range(retries + 1):
+            try:
+                return await request_func()
+            except (asyncio.TimeoutError, aiohttp.ClientError, OSError) as err:
+                if attempt == retries:
+                    raise
+                _LOGGER.debug(
+                    "Retry %d/%d after %s: %s",
+                    attempt + 1, retries, type(err).__name__, err,
+                )
+                await asyncio.sleep(delay)
+
+    async def get_data(self, path: str, timeout: float = API_TIMEOUT_READ) -> list:
+        """GET /api/getData — serialized via lock."""
+        async with self._lock:
+            return await self._request_with_retry(
+                lambda: self._do_get_data(path, timeout)
+            )
+
+    async def _do_get_data(self, path: str, timeout: float) -> list:
         session = await self._ensure_session()
         url = f"{self._base}/api/getData?path={quote(path, safe=':/')}&roles=value"
-        try:
-            async with session.get(url, timeout=aiohttp.ClientTimeout(total=5)) as resp:
-                return await resp.json(content_type=None)
-        except Exception:
-            _LOGGER.debug("Failed to get %s", path)
-            raise
+        async with session.get(url, timeout=aiohttp.ClientTimeout(total=timeout)) as resp:
+            return await resp.json(content_type=None)
 
-    async def set_data(self, path: str, value: dict, roles: str = "value") -> str:
-        """GET /api/setData?path={path}&roles={roles}&value={json}."""
+    async def set_data(
+        self, path: str, value: dict, roles: str = "value",
+        timeout: float = API_TIMEOUT_WRITE,
+    ) -> str:
+        """GET /api/setData — serialized via lock."""
+        async with self._lock:
+            return await self._request_with_retry(
+                lambda: self._do_set_data(path, value, roles, timeout)
+            )
+
+    async def _do_set_data(self, path: str, value: dict, roles: str, timeout: float) -> str:
         session = await self._ensure_session()
         val_str = json.dumps(value, separators=(",", ":"))
         url = f"{self._base}/api/setData?path={quote(path, safe=':/')}&roles={roles}&value={quote(val_str)}"
-        try:
-            async with session.get(url, timeout=aiohttp.ClientTimeout(total=5)) as resp:
-                return await resp.text()
-        except Exception:
-            _LOGGER.debug("Failed to set %s = %s", path, val_str)
-            raise
+        async with session.get(url, timeout=aiohttp.ClientTimeout(total=timeout)) as resp:
+            return await resp.text()
 
     async def get_rows(self, path: str) -> dict:
-        """GET /api/getRows?path={path}&roles=@all&from=0&to=65535&type=structure."""
+        """GET /api/getRows — serialized via lock."""
+        async with self._lock:
+            return await self._request_with_retry(
+                lambda: self._do_get_rows(path)
+            )
+
+    async def _do_get_rows(self, path: str) -> dict:
         session = await self._ensure_session()
         url = f"{self._base}/api/getRows?path={quote(path, safe=':/')}&roles=@all&from=0&to=65535&type=structure"
-        try:
-            async with session.get(url, timeout=aiohttp.ClientTimeout(total=5)) as resp:
-                return await resp.json(content_type=None)
-        except Exception:
-            _LOGGER.debug("Failed to getRows %s", path)
-            raise
+        async with session.get(url, timeout=aiohttp.ClientTimeout(total=API_TIMEOUT_READ)) as resp:
+            return await resp.json(content_type=None)
+
+    # --- Status polling with graceful degradation ---
 
     async def get_status(self) -> dict:
-        """Poll full device status (~160ms sequential, device is single-threaded)."""
+        """Poll device status. Individual failures fall back to last-known values."""
         from .const import API_PATHS
 
-        try:
-            vol = await self.get_data(API_PATHS["volume"])
-            mute = await self.get_data(API_PATHS["mute"])
-            inp = await self.get_data(API_PATHS["input"])
-            mode = await self.get_data(API_PATHS["mode"])
-            night = await self.get_data(API_PATHS["night"])
-            dialog = await self.get_data(API_PATHS["dialog"])
-            bass = await self.get_data(API_PATHS["bass"])
-            mid = await self.get_data(API_PATHS["mid"])
-            treble = await self.get_data(API_PATHS["treble"])
-            power = await self.get_data(API_PATHS["power"])
-            decoder = await self.get_data(API_PATHS["decoder"])
-            eq_preset = await self.get_data(API_PATHS["eq_preset"])
-            dirac = await self.get_data(API_PATHS["dirac"])
-            sub_w = await self.get_data(API_PATHS["sub_wired"])
-            sub_wl = await self.get_data(API_PATHS["sub_wireless"])
+        STATUS_PARAMS = {
+            "volume":       (API_PATHS["volume"],       lambda d: d[0].get("i32_", 0)),
+            "muted":        (API_PATHS["mute"],         lambda d: d[0].get("bool_", False)),
+            "input":        (API_PATHS["input"],        lambda d: d[0].get("cinemaPhysicalAudioInput", "unknown")),
+            "mode":         (API_PATHS["mode"],         lambda d: d[0].get("cinemaPostProcessorMode", "unknown")),
+            "night_mode":   (API_PATHS["night"],        lambda d: d[0].get("cinemaNightMode", "off")),
+            "dialog_mode":  (API_PATHS["dialog"],       lambda d: d[0].get("cinemaDialogMode", "off")),
+            "bass":         (API_PATHS["bass"],         lambda d: d[0].get("i32_", 0)),
+            "mid":          (API_PATHS["mid"],          lambda d: d[0].get("i32_", 0)),
+            "treble":       (API_PATHS["treble"],       lambda d: d[0].get("i32_", 0)),
+            "power":        (API_PATHS["power"],        lambda d: d[0].get("powerTarget", {}).get("target", "unknown")),
+            "decoder":      (API_PATHS["decoder"],      lambda d: d[0].get("cinemaAudioDecoder", "unknown")),
+            "eq_preset":    (API_PATHS["eq_preset"],    lambda d: d[0].get("cinemaEqPreset", "unknown")),
+            "dirac":        (API_PATHS["dirac"],        lambda d: d[0].get("i32_", -1)),
+            "sub_wired":    (API_PATHS["sub_wired"],    lambda d: d[0].get("i32_", 0)),
+            "sub_wireless": (API_PATHS["sub_wireless"], lambda d: d[0].get("i32_", 0)),
+            # Surround channel levels
+            "back_height":  (API_PATHS["back_height"],  lambda d: d[0].get("i32_", 0)),
+            "back_left":    (API_PATHS["back_left"],    lambda d: d[0].get("i32_", 0)),
+            "back_right":   (API_PATHS["back_right"],   lambda d: d[0].get("i32_", 0)),
+            "front_height": (API_PATHS["front_height"], lambda d: d[0].get("i32_", 0)),
+            "side_left":    (API_PATHS["side_left"],    lambda d: d[0].get("i32_", 0)),
+            "side_right":   (API_PATHS["side_right"],   lambda d: d[0].get("i32_", 0)),
+        }
 
-            return {
-                "online": True,
-                "volume": vol[0].get("i32_", 0),
-                "muted": mute[0].get("bool_", False),
-                "input": inp[0].get("cinemaPhysicalAudioInput", "unknown"),
-                "mode": mode[0].get("cinemaPostProcessorMode", "unknown"),
-                "night_mode": night[0].get("cinemaNightMode", "off"),
-                "dialog_mode": dialog[0].get("cinemaDialogMode", "off"),
-                "bass": bass[0].get("i32_", 0),
-                "mid": mid[0].get("i32_", 0),
-                "treble": treble[0].get("i32_", 0),
-                "power": power[0].get("powerTarget", {}).get("target", "unknown"),
-                "decoder": decoder[0].get("cinemaAudioDecoder", "unknown"),
-                "eq_preset": eq_preset[0].get("cinemaEqPreset", "unknown"),
-                "dirac": dirac[0].get("i32_", -1),
-                "sub_wired": sub_w[0].get("i32_", 0),
-                "sub_wireless": sub_wl[0].get("i32_", 0),
-            }
-        except Exception:
+        result: dict = {"online": True}
+        fail_count = 0
+
+        for key, (path, parser) in STATUS_PARAMS.items():
+            try:
+                data = await self.get_data(path)
+                result[key] = parser(data)
+            except Exception:
+                fail_count += 1
+                # Fall back to last-known value
+                cached = self._last_status.get(key)
+                if cached is not None:
+                    result[key] = cached
+                    _LOGGER.debug("Using cached value for %s", key)
+                else:
+                    _LOGGER.debug("No cached value for %s, skipping", key)
+
+        # If ALL parameters failed, device is truly offline
+        if fail_count == len(STATUS_PARAMS):
             return {"online": False}
+
+        self._last_status = result
+        return result
 
     # --- Setters ---
 
@@ -144,9 +200,14 @@ class KlipschAPI:
             {"type": "cinemaDialogMode", "cinemaDialogMode": mode},
         )
 
-    async def set_eq(self, param: str, value: int) -> None:
+    async def set_channel_level(self, param: str, value: int) -> None:
+        """Set any channel level (bass/mid/treble/surround/sub) by key."""
         from .const import API_PATHS
         await self.set_data(API_PATHS[param], {"type": "i32_", "i32_": value})
+
+    # Legacy aliases
+    set_eq = set_channel_level
+    set_sub = set_channel_level
 
     async def set_eq_preset(self, preset: str) -> None:
         from .const import API_PATHS
@@ -159,16 +220,13 @@ class KlipschAPI:
         from .const import API_PATHS
         await self.set_data(API_PATHS["dirac"], {"type": "i32_", "i32_": filter_id})
 
-    async def set_sub(self, which: str, value: int) -> None:
-        from .const import API_PATHS
-        await self.set_data(API_PATHS[which], {"type": "i32_", "i32_": value})
-
     async def set_power(self, target: str) -> None:
         from .const import API_PATHS
         await self.set_data(
             API_PATHS["power_req"],
             {"target": target, "reason": "userActivity"},
             roles="activate",
+            timeout=API_TIMEOUT_POWER,
         )
 
     async def get_dirac_filters(self) -> list[dict]:
