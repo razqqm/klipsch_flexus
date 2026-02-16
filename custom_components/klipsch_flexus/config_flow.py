@@ -6,9 +6,9 @@ from urllib.parse import urlparse
 
 import voluptuous as vol
 from homeassistant import config_entries
-from homeassistant.components.ssdp import SsdpServiceInfo
 from homeassistant.const import CONF_HOST
 from homeassistant.core import callback
+from homeassistant.helpers.service_info.ssdp import SsdpServiceInfo
 
 from .api import KlipschAPI
 from .const import CONF_SCAN_INTERVAL, DOMAIN, SCAN_INTERVAL_SECONDS
