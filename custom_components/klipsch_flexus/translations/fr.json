@@ -1,0 +1,95 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Klipsch Flexus",
+        "description": "Entrez l'adresse IP de votre barre de son Klipsch Flexus CORE 300.\n\nL'appareil doit \u00eatre pr\u00e9alablement configur\u00e9 via l'application Klipsch Connect Plus.",
+        "data": {
+          "host": "Adresse IP"
+        }
+      },
+      "confirm": {
+        "title": "Klipsch Flexus d\u00e9couvert",
+        "description": "Barre de son Klipsch Flexus trouv\u00e9e \u00e0 **{host}**. Ajouter ?"
+      },
+      "reconfigure": {
+        "title": "Reconfigurer Klipsch Flexus",
+        "description": "Mettre \u00e0 jour l'adresse IP de la barre de son.",
+        "data": {
+          "host": "Adresse IP"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Impossible de se connecter. V\u00e9rifiez l'adresse IP."
+    },
+    "abort": {
+      "already_configured": "Cet appareil est d\u00e9j\u00e0 configur\u00e9.",
+      "no_host": "Impossible de d\u00e9terminer l'adresse IP de l'appareil."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Param\u00e8tres Klipsch Flexus",
+        "data": {
+          "scan_interval": "Intervalle d'interrogation (secondes)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "select": {
+      "night_mode": {
+        "name": "1. Mode nuit",
+        "state": {
+          "off": "D\u00e9sactiv\u00e9",
+          "night_mode_1": "Activ\u00e9"
+        }
+      },
+      "dialog_mode": {
+        "name": "2. Mode dialogue",
+        "state": {
+          "off": "D\u00e9sactiv\u00e9",
+          "dialog_1": "Niveau 1",
+          "dialog_2": "Niveau 2",
+          "dialog_3": "Niveau 3"
+        }
+      },
+      "eq_preset": {
+        "name": "3. Pr\u00e9r\u00e9glage EQ",
+        "state": {
+          "flat": "Plat",
+          "bass": "Basses",
+          "rock": "Rock",
+          "vocal": "Voix"
+        }
+      },
+      "dirac": { "name": "4. Filtre Dirac" }
+    },
+    "number": {
+      "back_height": { "name": "Canal : Arri\u00e8re haut" },
+      "back_left": { "name": "Canal : Arri\u00e8re gauche" },
+      "back_right": { "name": "Canal : Arri\u00e8re droit" },
+      "front_height": { "name": "Canal : Avant haut" },
+      "side_left": { "name": "Canal : Lat\u00e9ral gauche" },
+      "side_right": { "name": "Canal : Lat\u00e9ral droit" },
+      "sub_wired": { "name": "Canal : Caisson de basses 1" },
+      "sub_wireless": { "name": "Canal : Caisson de basses 2" },
+      "bass": { "name": "Tonalit\u00e9 : Graves" },
+      "mid": { "name": "Tonalit\u00e9 : M\u00e9diums" },
+      "treble": { "name": "Tonalit\u00e9 : Aigus" }
+    },
+    "sensor": {
+      "response_time": { "name": "Statut : Temps de r\u00e9ponse" },
+      "device_status": {
+        "name": "Statut : Appareil",
+        "state": {
+          "offline": "Hors ligne",
+          "on": "Allum\u00e9",
+          "standby": "Veille"
+        }
+      }
+    }
+  }
+}

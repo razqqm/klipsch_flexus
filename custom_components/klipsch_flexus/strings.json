@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Klipsch Flexus",
-        "description": "Enter the IP address of your Klipsch Flexus CORE 300 soundbar.",
+        "description": "Enter the IP address of your Klipsch Flexus CORE 300 soundbar.\n\nThe device must be pre-configured via the Klipsch Connect Plus app.",
         "data": {
           "host": "IP Address"
         }
@@ -40,9 +40,31 @@
   },
   "entity": {
     "select": {
-      "night_mode": { "name": "1. Night Mode" },
-      "dialog_mode": { "name": "2. Dialog Mode" },
-      "eq_preset": { "name": "3. EQ Preset" },
+      "night_mode": {
+        "name": "1. Night Mode",
+        "state": {
+          "off": "Off",
+          "night_mode_1": "On"
+        }
+      },
+      "dialog_mode": {
+        "name": "2. Dialog Mode",
+        "state": {
+          "off": "Off",
+          "dialog_1": "Level 1",
+          "dialog_2": "Level 2",
+          "dialog_3": "Level 3"
+        }
+      },
+      "eq_preset": {
+        "name": "3. EQ Preset",
+        "state": {
+          "flat": "Flat",
+          "bass": "Bass",
+          "rock": "Rock",
+          "vocal": "Vocal"
+        }
+      },
       "dirac": { "name": "4. Dirac Filter" }
     },
     "number": {
@@ -60,7 +82,14 @@
     },
     "sensor": {
       "response_time": { "name": "Status: Response Time" },
-      "device_status": { "name": "Status: Device" }
+      "device_status": {
+        "name": "Status: Device",
+        "state": {
+          "offline": "Offline",
+          "on": "On",
+          "standby": "Standby"
+        }
+      }
     }
   }
 }

@@ -1,0 +1,95 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Klipsch Flexus",
+        "description": "Introduzca la direcci\u00f3n IP de su barra de sonido Klipsch Flexus CORE 300.\n\nEl dispositivo debe estar preconfigurado a trav\u00e9s de la aplicaci\u00f3n Klipsch Connect Plus.",
+        "data": {
+          "host": "Direcci\u00f3n IP"
+        }
+      },
+      "confirm": {
+        "title": "Klipsch Flexus detectado",
+        "description": "Barra de sonido Klipsch Flexus encontrada en **{host}**. \u00bfA\u00f1adir?"
+      },
+      "reconfigure": {
+        "title": "Reconfigurar Klipsch Flexus",
+        "description": "Actualice la direcci\u00f3n IP de la barra de sonido.",
+        "data": {
+          "host": "Direcci\u00f3n IP"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "No se puede conectar. Verifique la direcci\u00f3n IP."
+    },
+    "abort": {
+      "already_configured": "Este dispositivo ya est\u00e1 configurado.",
+      "no_host": "No se pudo determinar la direcci\u00f3n IP del dispositivo."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Ajustes de Klipsch Flexus",
+        "data": {
+          "scan_interval": "Intervalo de consulta (segundos)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "select": {
+      "night_mode": {
+        "name": "1. Modo nocturno",
+        "state": {
+          "off": "Desactivado",
+          "night_mode_1": "Activado"
+        }
+      },
+      "dialog_mode": {
+        "name": "2. Modo di\u00e1logo",
+        "state": {
+          "off": "Desactivado",
+          "dialog_1": "Nivel 1",
+          "dialog_2": "Nivel 2",
+          "dialog_3": "Nivel 3"
+        }
+      },
+      "eq_preset": {
+        "name": "3. Preajuste EQ",
+        "state": {
+          "flat": "Plano",
+          "bass": "Graves",
+          "rock": "Rock",
+          "vocal": "Vocal"
+        }
+      },
+      "dirac": { "name": "4. Filtro Dirac" }
+    },
+    "number": {
+      "back_height": { "name": "Canal: Trasero superior" },
+      "back_left": { "name": "Canal: Trasero izquierdo" },
+      "back_right": { "name": "Canal: Trasero derecho" },
+      "front_height": { "name": "Canal: Frontal superior" },
+      "side_left": { "name": "Canal: Lateral izquierdo" },
+      "side_right": { "name": "Canal: Lateral derecho" },
+      "sub_wired": { "name": "Canal: Subwoofer 1" },
+      "sub_wireless": { "name": "Canal: Subwoofer 2" },
+      "bass": { "name": "Tono: Graves" },
+      "mid": { "name": "Tono: Medios" },
+      "treble": { "name": "Tono: Agudos" }
+    },
+    "sensor": {
+      "response_time": { "name": "Estado: Tiempo de respuesta" },
+      "device_status": {
+        "name": "Estado: Dispositivo",
+        "state": {
+          "offline": "Sin conexi\u00f3n",
+          "on": "Encendido",
+          "standby": "En espera"
+        }
+      }
+    }
+  }
+}

@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Klipsch Flexus",
-        "description": "Введите IP-адрес саундбара Klipsch Flexus CORE 300.",
+        "description": "Введите IP-адрес саундбара Klipsch Flexus CORE 300.\n\nУстройство должно быть предварительно настроено через приложение Klipsch Connect Plus.",
         "data": {
           "host": "IP-адрес"
         }
@@ -40,9 +40,31 @@
   },
   "entity": {
     "select": {
-      "night_mode": { "name": "1. Ночной режим" },
-      "dialog_mode": { "name": "2. Режим диалога" },
-      "eq_preset": { "name": "3. Пресет EQ" },
+      "night_mode": {
+        "name": "1. Ночной режим",
+        "state": {
+          "off": "Выкл",
+          "night_mode_1": "Вкл"
+        }
+      },
+      "dialog_mode": {
+        "name": "2. Режим диалога",
+        "state": {
+          "off": "Выкл",
+          "dialog_1": "Уровень 1",
+          "dialog_2": "Уровень 2",
+          "dialog_3": "Уровень 3"
+        }
+      },
+      "eq_preset": {
+        "name": "3. Пресет EQ",
+        "state": {
+          "flat": "Плоский",
+          "bass": "Бас",
+          "rock": "Рок",
+          "vocal": "Вокал"
+        }
+      },
       "dirac": { "name": "4. Фильтр Dirac" }
     },
     "number": {
@@ -60,7 +82,14 @@
     },
     "sensor": {
       "response_time": { "name": "Статус: Время отклика" },
-      "device_status": { "name": "Статус: Устройство" }
+      "device_status": {
+        "name": "Статус: Устройство",
+        "state": {
+          "offline": "Не в сети",
+          "on": "Включено",
+          "standby": "Ожидание"
+        }
+      }
     }
   }
 }
