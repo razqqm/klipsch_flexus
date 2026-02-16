@@ -28,6 +28,7 @@ class KlipschCoordinator(DataUpdateCoordinator[dict]):
         )
         self.api = api
         self.dirac_filters: list[dict] = []
+        self.device_info: dict | None = None  # eureka_info from port 8008
 
     async def _async_update_data(self) -> dict:
         try:
@@ -37,6 +38,13 @@ class KlipschCoordinator(DataUpdateCoordinator[dict]):
 
         if not status.get("online"):
             return {"online": False}
+
+        # Fetch device info once (eureka_info from Google Cast API)
+        if self.device_info is None:
+            try:
+                self.device_info = await self.api.get_device_info()
+            except Exception:
+                _LOGGER.debug("Failed to fetch device info from port 8008")
 
         # Fetch Dirac filters once
         if not self.dirac_filters:
