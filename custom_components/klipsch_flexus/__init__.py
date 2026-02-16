@@ -9,7 +9,7 @@ from .api import KlipschAPI
 from .const import DOMAIN, SCAN_INTERVAL_SECONDS, CONF_SCAN_INTERVAL
 from .coordinator import KlipschCoordinator
 
-PLATFORMS = [Platform.MEDIA_PLAYER, Platform.SELECT, Platform.NUMBER]
+PLATFORMS = [Platform.MEDIA_PLAYER, Platform.SELECT, Platform.NUMBER, Platform.SENSOR]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

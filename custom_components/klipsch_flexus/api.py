@@ -4,6 +4,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import time
 from urllib.parse import quote
 
 import aiohttp
@@ -34,6 +35,9 @@ class KlipschAPI:
         self._own_session = session is None
         self._lock = asyncio.Lock()
         self._last_status: dict = {}
+        self.last_response_time: float | None = None  # ms
+        self.total_requests: int = 0
+        self.failed_requests: int = 0
 
     async def _ensure_session(self) -> aiohttp.ClientSession:
         if self._session is None or self._session.closed:
@@ -74,8 +78,17 @@ class KlipschAPI:
     async def _do_get_data(self, path: str, timeout: float) -> list:
         session = await self._ensure_session()
         url = f"{self._base}/api/getData?path={quote(path, safe=':/')}&roles=value"
-        async with session.get(url, timeout=aiohttp.ClientTimeout(total=timeout)) as resp:
-            return await resp.json(content_type=None)
+        t0 = time.monotonic()
+        try:
+            async with session.get(url, timeout=aiohttp.ClientTimeout(total=timeout)) as resp:
+                result = await resp.json(content_type=None)
+            self.last_response_time = round((time.monotonic() - t0) * 1000, 1)
+            self.total_requests += 1
+            return result
+        except Exception:
+            self.failed_requests += 1
+            self.total_requests += 1
+            raise
 
     async def set_data(
         self, path: str, value: dict, roles: str = "value",
@@ -140,6 +153,7 @@ class KlipschAPI:
 
         result: dict = {"online": True}
         fail_count = 0
+        poll_start = time.monotonic()
 
         for key, (path, parser) in STATUS_PARAMS.items():
             try:
@@ -159,6 +173,8 @@ class KlipschAPI:
         if fail_count == len(STATUS_PARAMS):
             return {"online": False}
 
+        result["poll_time_ms"] = round((time.monotonic() - poll_start) * 1000)
+        result["failed_params"] = fail_count
         self._last_status = result
         return result
 
