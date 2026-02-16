@@ -47,22 +47,22 @@ API_PATHS = {
 }
 
 # Channel levels — surround speakers, subwoofers, then tone controls
-# Prefixes ensure correct alphabetical sort order in HA UI
+# Display names are handled by translations (entity.number.<key>.name)
 CHANNEL_LEVELS = [
     # Surround channels (Dolby Atmos)
-    ("back_height", "Channel: Back Height", "mdi:speaker"),
-    ("back_left", "Channel: Back Left", "mdi:speaker"),
-    ("back_right", "Channel: Back Right", "mdi:speaker"),
-    ("front_height", "Channel: Front Height", "mdi:speaker"),
-    ("side_left", "Channel: Side Left", "mdi:speaker"),
-    ("side_right", "Channel: Side Right", "mdi:speaker"),
+    ("back_height", "mdi:speaker"),
+    ("back_left", "mdi:speaker"),
+    ("back_right", "mdi:speaker"),
+    ("front_height", "mdi:speaker"),
+    ("side_left", "mdi:speaker"),
+    ("side_right", "mdi:speaker"),
     # Subwoofers
-    ("sub_wired", "Channel: Subwoofer Wireless 1", "mdi:speaker-wireless"),
-    ("sub_wireless", "Channel: Subwoofer Wireless 2", "mdi:speaker-wireless"),
+    ("sub_wired", "mdi:speaker-wireless"),
+    ("sub_wireless", "mdi:speaker-wireless"),
     # Tone
-    ("bass", "Tone: Bass", "mdi:sine-wave"),
-    ("mid", "Tone: Mid", "mdi:tune"),
-    ("treble", "Tone: Treble", "mdi:music-clef-treble"),
+    ("bass", "mdi:sine-wave"),
+    ("mid", "mdi:tune"),
+    ("treble", "mdi:music-clef-treble"),
 ]
 
 # Source list (input names → display names)
@@ -78,18 +78,11 @@ SOURCES_REVERSE = {v: k for k, v in SOURCES.items()}
 # Sound modes
 SOUND_MODES = ["movie", "music", "game", "sport", "night", "direct", "surround", "stereo"]
 
-# Night mode
-NIGHT_MODES = {"off": "Off", "nightMode_1": "On"}
-NIGHT_MODES_REVERSE = {v: k for k, v in NIGHT_MODES.items()}
+# Night mode (raw API keys; display names via translations)
+NIGHT_MODES = ["off", "nightMode_1"]
 
-# Dialog mode
-DIALOG_MODES = {
-    "off": "Off",
-    "dialog_1": "Level 1",
-    "dialog_2": "Level 2",
-    "dialog_3": "Level 3",
-}
-DIALOG_MODES_REVERSE = {v: k for k, v in DIALOG_MODES.items()}
+# Dialog mode (raw API keys; display names via translations)
+DIALOG_MODES = ["off", "dialog_1", "dialog_2", "dialog_3"]
 
 # EQ Presets
 EQ_PRESETS = ["flat", "bass", "rock", "vocal"]

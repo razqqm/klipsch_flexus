@@ -1,0 +1,95 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Klipsch Flexus",
+        "description": "Inserisci l'indirizzo IP della tua soundbar Klipsch Flexus CORE 300.",
+        "data": {
+          "host": "Indirizzo IP"
+        }
+      },
+      "confirm": {
+        "title": "Klipsch Flexus trovato",
+        "description": "Soundbar Klipsch Flexus trovata all'indirizzo **{host}**. Aggiungere?"
+      },
+      "reconfigure": {
+        "title": "Riconfigura Klipsch Flexus",
+        "description": "Aggiorna l'indirizzo IP della soundbar.",
+        "data": {
+          "host": "Indirizzo IP"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Impossibile connettersi. Controlla l'indirizzo IP."
+    },
+    "abort": {
+      "already_configured": "Questo dispositivo \u00e8 gi\u00e0 configurato.",
+      "no_host": "Impossibile determinare l'indirizzo IP del dispositivo."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Impostazioni Klipsch Flexus",
+        "data": {
+          "scan_interval": "Intervallo di polling (secondi)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "select": {
+      "night_mode": {
+        "name": "1. Modalit\u00e0 notturna",
+        "state": {
+          "off": "Spento",
+          "nightMode_1": "Acceso"
+        }
+      },
+      "dialog_mode": {
+        "name": "2. Modalit\u00e0 dialogo",
+        "state": {
+          "off": "Spento",
+          "dialog_1": "Livello 1",
+          "dialog_2": "Livello 2",
+          "dialog_3": "Livello 3"
+        }
+      },
+      "eq_preset": {
+        "name": "3. Preset EQ",
+        "state": {
+          "flat": "Piatto",
+          "bass": "Bassi",
+          "rock": "Rock",
+          "vocal": "Voce"
+        }
+      },
+      "dirac": { "name": "4. Filtro Dirac" }
+    },
+    "number": {
+      "back_height": { "name": "Canale: Posteriore alto" },
+      "back_left": { "name": "Canale: Posteriore sinistro" },
+      "back_right": { "name": "Canale: Posteriore destro" },
+      "front_height": { "name": "Canale: Anteriore alto" },
+      "side_left": { "name": "Canale: Laterale sinistro" },
+      "side_right": { "name": "Canale: Laterale destro" },
+      "sub_wired": { "name": "Canale: Subwoofer 1" },
+      "sub_wireless": { "name": "Canale: Subwoofer 2" },
+      "bass": { "name": "Tono: Bassi" },
+      "mid": { "name": "Tono: Medi" },
+      "treble": { "name": "Tono: Alti" }
+    },
+    "sensor": {
+      "response_time": { "name": "Stato: Tempo di risposta" },
+      "device_status": {
+        "name": "Stato: Dispositivo",
+        "state": {
+          "offline": "Offline",
+          "on": "Acceso",
+          "standby": "Standby"
+        }
+      }
+    }
+  }
+}
