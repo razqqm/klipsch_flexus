@@ -191,20 +191,20 @@ class KlipschMediaPlayer(CoordinatorEntity[KlipschCoordinator], MediaPlayerEntit
             "eq_preset": data.get("eq_preset", "unknown"),
             "night_mode": data.get("night_mode", "off"),
             "dialog_mode": data.get("dialog_mode", "off"),
-            # Channel levels
-            "bass": data.get("bass", 0),
-            "mid": data.get("mid", 0),
-            "treble": data.get("treble", 0),
             # Surround channels
+            "back_height": data.get("back_height", 0),
+            "back_left": data.get("back_left", 0),
+            "back_right": data.get("back_right", 0),
             "front_height": data.get("front_height", 0),
             "side_left": data.get("side_left", 0),
             "side_right": data.get("side_right", 0),
-            "back_left": data.get("back_left", 0),
-            "back_right": data.get("back_right", 0),
-            "back_height": data.get("back_height", 0),
-            # Subwoofer
-            "sub_wired": data.get("sub_wired", 0),
-            "sub_wireless": data.get("sub_wireless", 0),
+            # Subwoofers
+            "sub_wireless_1": data.get("sub_wired", 0),
+            "sub_wireless_2": data.get("sub_wireless", 0),
+            # Tone
+            "bass": data.get("bass", 0),
+            "mid": data.get("mid", 0),
+            "treble": data.get("treble", 0),
             # Dirac
             "dirac_filter": self._dirac_filter_name(),
         }

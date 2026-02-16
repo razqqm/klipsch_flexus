@@ -46,19 +46,22 @@ API_PATHS = {
     "player_control": "player:player/control",
 }
 
-# Channel level keys (bass/mid/treble + surround speakers + subwoofers)
+# Channel levels — surround speakers, subwoofers, then tone controls
 CHANNEL_LEVELS = [
-    ("bass",         "Bass",              "mdi:speaker"),
-    ("mid",          "Mid",               "mdi:tune"),
-    ("treble",       "Treble",            "mdi:music-clef-treble"),
-    ("front_height", "Front Height",      "mdi:speaker"),
-    ("side_left",    "Side Left",         "mdi:speaker"),
-    ("side_right",   "Side Right",        "mdi:speaker"),
-    ("back_left",    "Back Left",         "mdi:speaker"),
-    ("back_right",   "Back Right",        "mdi:speaker"),
-    ("back_height",  "Back Height",       "mdi:speaker"),
-    ("sub_wired",    "Subwoofer Wired",   "mdi:subwoofer"),
-    ("sub_wireless", "Subwoofer Wireless", "mdi:subwoofer"),
+    # Surround channels (Dolby Atmos)
+    ("back_height",  "Back Height",          "mdi:speaker"),
+    ("back_left",    "Back Left",            "mdi:speaker"),
+    ("back_right",   "Back Right",           "mdi:speaker"),
+    ("front_height", "Front Height",         "mdi:speaker"),
+    ("side_left",    "Side Left",            "mdi:speaker"),
+    ("side_right",   "Side Right",           "mdi:speaker"),
+    # Subwoofers
+    ("sub_wired",    "Subwoofer Wireless 1", "mdi:subwoofer"),
+    ("sub_wireless", "Subwoofer Wireless 2", "mdi:subwoofer"),
+    # Tone
+    ("bass",         "Bass",                 "mdi:sine-wave"),
+    ("mid",          "Mid",                  "mdi:tune"),
+    ("treble",       "Treble",               "mdi:music-clef-treble"),
 ]
 
 # Source list (input names → display names)
