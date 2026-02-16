@@ -57,8 +57,8 @@ CHANNEL_LEVELS = [
     ("side_left",    "Channel: Side Left",            "mdi:speaker"),
     ("side_right",   "Channel: Side Right",           "mdi:speaker"),
     # Subwoofers
-    ("sub_wired",    "Channel: Subwoofer Wireless 1", "mdi:subwoofer"),
-    ("sub_wireless", "Channel: Subwoofer Wireless 2", "mdi:subwoofer"),
+    ("sub_wired",    "Channel: Subwoofer Wireless 1", "mdi:speaker-wireless"),
+    ("sub_wireless", "Channel: Subwoofer Wireless 2", "mdi:speaker-wireless"),
     # Tone
     ("bass",         "Tone: Bass",                    "mdi:sine-wave"),
     ("mid",          "Tone: Mid",                     "mdi:tune"),
