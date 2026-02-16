@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from ipaddress import IPv4Address
+
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_HOST
@@ -33,7 +35,14 @@ class KlipschFlexusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_zeroconf(self, discovery_info: ZeroconfServiceInfo) -> config_entries.ConfigFlowResult:
         """Handle Zeroconf/mDNS discovery (Google Cast or AirPlay)."""
-        host = str(discovery_info.ip_address)
+        # Prefer IPv4 — the soundbar HTTP API only listens on IPv4
+        host = None
+        for addr in discovery_info.ip_addresses:
+            if isinstance(addr, IPv4Address):
+                host = str(addr)
+                break
+        if host is None:
+            host = str(discovery_info.ip_address)
         properties = discovery_info.properties
 
         # Google Cast TXT records use 'md' for model, 'fn' for friendly name
