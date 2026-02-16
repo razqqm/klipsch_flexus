@@ -3,7 +3,7 @@
   "name": "Klipsch Flexus",
   "codeowners": ["@razqqm"],
   "config_flow": true,
-  "dependencies": [],
+  "dependencies": ["ssdp"],
   "documentation": "https://github.com/razqqm/klipsch_flexus",
   "integration_type": "device",
   "iot_class": "local_polling",
