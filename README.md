@@ -12,7 +12,8 @@
 [![Copilot](https://img.shields.io/badge/Copilot-Code_Review-8957e5.svg)](https://github.com/razqqm/klipsch_flexus/actions/workflows/copilot-pull-request-reviewer/copilot-pull-request-reviewer)
 [![Ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
 
-🌐 **English** | [Русский](docs/README_ru.md) | [Deutsch](docs/README_de.md) | [Español](docs/README_es.md) | [Português](docs/README_pt.md)
+🌐 **English** | [Русский](docs/README_ru.md) | [Deutsch](docs/README_de.md) | [Español](docs/README_es.md) | [Português](docs/README_pt.md)  
+🔒 **Security**: [Policy](SECURITY.md) | [Assessment Report](docs/SECURITY_ASSESSMENT_CORE_300.md)
 
 ---
 
@@ -156,6 +157,12 @@ The Klipsch Flexus has a **single-threaded HTTP server** that processes one requ
 - No multi-room / wireless surround group management (use Klipsch Connect Plus app)
 - AirPlay and Cast protocols are not used — only the native HTTP API
 - Initial device setup requires the official Klipsch Connect Plus app
+
+## Security
+
+See [SECURITY.md](SECURITY.md) for security policy and best practices.
+
+**Network Security Notice**: The soundbar communicates over HTTP without authentication. Keep it on a trusted network segment. Read the [Security Assessment Report](docs/SECURITY_ASSESSMENT_CORE_300.md) for detailed security analysis.
 
 ## License
 

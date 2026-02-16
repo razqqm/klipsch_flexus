@@ -118,6 +118,29 @@ This integration has **zero external Python dependencies** (see `manifest.json`)
 - Type hints for all functions (PEP 484)
 - Async/await patterns to prevent blocking
 
+## Security Assessment Report
+
+### Klipsch Flexus CORE 300 Network Security Assessment
+
+A comprehensive security assessment of the Klipsch Flexus CORE 300 soundbar was conducted in February 2026 covering:
+- Network port scanning and service enumeration
+- API security analysis
+- TLS certificate inspection
+- Vulnerability assessment (CVE tracking)
+- Firmware update status
+- Metasploit module testing
+
+**Key Findings:**
+- 11 open TCP ports with no authentication
+- Firmware from January 2024 (2+ years old)
+- 5 unpatched CVEs (4 High severity)
+- Unauthenticated device information disclosure
+- TLS certificates and cryptographic keys exposed to local network
+
+📄 **[Read Full Security Assessment Report](docs/SECURITY_ASSESSMENT_CORE_300.md)**
+
+The assessment validates the security limitations described in this document and provides detailed recommendations for network hardening.
+
 ## Known Limitations
 
 ### Soundbar Firmware Limitations
@@ -154,5 +177,6 @@ We appreciate the security research community and will credit researchers who re
 
 ---
 
-**Last Updated**: February 2026
-**Integration Version**: 1.4.0
+**Last Updated**: February 17, 2026  
+**Integration Version**: 1.4.0  
+**Security Assessment**: [Klipsch Flexus CORE 300 Report](docs/SECURITY_ASSESSMENT_CORE_300.md)
