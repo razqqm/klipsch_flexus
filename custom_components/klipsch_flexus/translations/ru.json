@@ -8,10 +8,6 @@
           "host": "IP-адрес"
         }
       },
-      "confirm": {
-        "title": "Klipsch Flexus обнаружен",
-        "description": "Найден саундбар Klipsch Flexus по адресу **{host}**. Добавить?"
-      },
       "reconfigure": {
         "title": "Перенастройка Klipsch Flexus",
         "description": "Обновите IP-адрес саундбара.",
@@ -24,8 +20,7 @@
       "cannot_connect": "Не удаётся подключиться. Проверьте IP-адрес."
     },
     "abort": {
-      "already_configured": "Это устройство уже настроено.",
-      "no_host": "Не удалось определить IP-адрес устройства."
+      "already_configured": "Это устройство уже настроено."
     }
   },
   "options": {
@@ -65,23 +60,49 @@
           "vocal": "Вокал"
         }
       },
-      "dirac": { "name": "4. Фильтр Dirac" }
+      "dirac": {
+        "name": "4. Фильтр Dirac"
+      }
     },
     "number": {
-      "back_height": { "name": "Канал: Задний верхний" },
-      "back_left": { "name": "Канал: Задний левый" },
-      "back_right": { "name": "Канал: Задний правый" },
-      "front_height": { "name": "Канал: Передний верхний" },
-      "side_left": { "name": "Канал: Боковой левый" },
-      "side_right": { "name": "Канал: Боковой правый" },
-      "sub_wired": { "name": "Канал: Сабвуфер 1" },
-      "sub_wireless": { "name": "Канал: Сабвуфер 2" },
-      "bass": { "name": "Тон: Бас" },
-      "mid": { "name": "Тон: Средние" },
-      "treble": { "name": "Тон: Высокие" }
+      "back_height": {
+        "name": "Канал: Задний верхний"
+      },
+      "back_left": {
+        "name": "Канал: Задний левый"
+      },
+      "back_right": {
+        "name": "Канал: Задний правый"
+      },
+      "front_height": {
+        "name": "Канал: Передний верхний"
+      },
+      "side_left": {
+        "name": "Канал: Боковой левый"
+      },
+      "side_right": {
+        "name": "Канал: Боковой правый"
+      },
+      "sub_wired": {
+        "name": "Канал: Сабвуфер 1"
+      },
+      "sub_wireless": {
+        "name": "Канал: Сабвуфер 2"
+      },
+      "bass": {
+        "name": "Тон: Бас"
+      },
+      "mid": {
+        "name": "Тон: Средние"
+      },
+      "treble": {
+        "name": "Тон: Высокие"
+      }
     },
     "sensor": {
-      "response_time": { "name": "Статус: Время отклика" },
+      "response_time": {
+        "name": "Статус: Время отклика"
+      },
       "device_status": {
         "name": "Статус: Устройство",
         "state": {

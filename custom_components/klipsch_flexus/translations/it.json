@@ -8,10 +8,6 @@
           "host": "Indirizzo IP"
         }
       },
-      "confirm": {
-        "title": "Klipsch Flexus trovato",
-        "description": "Soundbar Klipsch Flexus trovata all'indirizzo **{host}**. Aggiungere?"
-      },
       "reconfigure": {
         "title": "Riconfigura Klipsch Flexus",
         "description": "Aggiorna l'indirizzo IP della soundbar.",
@@ -24,8 +20,7 @@
       "cannot_connect": "Impossibile connettersi. Controlla l'indirizzo IP."
     },
     "abort": {
-      "already_configured": "Questo dispositivo \u00e8 gi\u00e0 configurato.",
-      "no_host": "Impossibile determinare l'indirizzo IP del dispositivo."
+      "already_configured": "Questo dispositivo è già configurato."
     }
   },
   "options": {
@@ -41,14 +36,14 @@
   "entity": {
     "select": {
       "night_mode": {
-        "name": "1. Modalit\u00e0 notturna",
+        "name": "1. Modalità notturna",
         "state": {
           "off": "Spento",
           "night_mode_1": "Acceso"
         }
       },
       "dialog_mode": {
-        "name": "2. Modalit\u00e0 dialogo",
+        "name": "2. Modalità dialogo",
         "state": {
           "off": "Spento",
           "dialog_1": "Livello 1",
@@ -65,23 +60,49 @@
           "vocal": "Voce"
         }
       },
-      "dirac": { "name": "4. Filtro Dirac" }
+      "dirac": {
+        "name": "4. Filtro Dirac"
+      }
     },
     "number": {
-      "back_height": { "name": "Canale: Posteriore alto" },
-      "back_left": { "name": "Canale: Posteriore sinistro" },
-      "back_right": { "name": "Canale: Posteriore destro" },
-      "front_height": { "name": "Canale: Anteriore alto" },
-      "side_left": { "name": "Canale: Laterale sinistro" },
-      "side_right": { "name": "Canale: Laterale destro" },
-      "sub_wired": { "name": "Canale: Subwoofer 1" },
-      "sub_wireless": { "name": "Canale: Subwoofer 2" },
-      "bass": { "name": "Tono: Bassi" },
-      "mid": { "name": "Tono: Medi" },
-      "treble": { "name": "Tono: Alti" }
+      "back_height": {
+        "name": "Canale: Posteriore alto"
+      },
+      "back_left": {
+        "name": "Canale: Posteriore sinistro"
+      },
+      "back_right": {
+        "name": "Canale: Posteriore destro"
+      },
+      "front_height": {
+        "name": "Canale: Anteriore alto"
+      },
+      "side_left": {
+        "name": "Canale: Laterale sinistro"
+      },
+      "side_right": {
+        "name": "Canale: Laterale destro"
+      },
+      "sub_wired": {
+        "name": "Canale: Subwoofer 1"
+      },
+      "sub_wireless": {
+        "name": "Canale: Subwoofer 2"
+      },
+      "bass": {
+        "name": "Tono: Bassi"
+      },
+      "mid": {
+        "name": "Tono: Medi"
+      },
+      "treble": {
+        "name": "Tono: Alti"
+      }
     },
     "sensor": {
-      "response_time": { "name": "Stato: Tempo di risposta" },
+      "response_time": {
+        "name": "Stato: Tempo di risposta"
+      },
       "device_status": {
         "name": "Stato: Dispositivo",
         "state": {
