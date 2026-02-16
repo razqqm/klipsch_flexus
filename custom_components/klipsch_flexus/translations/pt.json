@@ -14,13 +14,18 @@
         "data": {
           "host": "Endereço IP"
         }
+      },
+      "zeroconf_confirm": {
+        "title": "Klipsch Flexus descoberto",
+        "description": "Encontrado **{name}** em `{host}`.\n\nDeseja adicionar esta soundbar?"
       }
     },
     "error": {
       "cannot_connect": "Não foi possível conectar. Verifique o endereço IP."
     },
     "abort": {
-      "already_configured": "Este dispositivo já está configurado."
+      "already_configured": "Este dispositivo já está configurado.",
+      "not_klipsch_device": "Não é um dispositivo Klipsch Flexus."
     }
   },
   "options": {
