@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Klipsch Flexus",
-        "description": "Введите IP-адрес саундбара Klipsch Flexus CORE 300.",
+        "description": "Введите IP-адрес саундбара Klipsch Flexus CORE 300.\n\nУстройство должно быть предварительно настроено через приложение Klipsch Connect Plus.",
         "data": {
           "host": "IP-адрес"
         }
