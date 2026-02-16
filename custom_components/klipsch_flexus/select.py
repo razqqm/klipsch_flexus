@@ -1,4 +1,5 @@
 """Select entities for Klipsch Flexus."""
+
 from __future__ import annotations
 
 from homeassistant.components.select import SelectEntity
@@ -9,19 +10,17 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import (
-    DOMAIN,
-    NIGHT_MODES,
-    NIGHT_MODES_REVERSE,
     DIALOG_MODES,
     DIALOG_MODES_REVERSE,
+    DOMAIN,
     EQ_PRESETS,
+    NIGHT_MODES,
+    NIGHT_MODES_REVERSE,
 )
 from .coordinator import KlipschCoordinator
 
 
-async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
-) -> None:
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback) -> None:
     coordinator: KlipschCoordinator = hass.data[DOMAIN][entry.entry_id]
     entities = [
         KlipschNightModeSelect(coordinator, entry),

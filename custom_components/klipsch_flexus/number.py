@@ -1,4 +1,5 @@
 """Number entities for Klipsch Flexus channel levels."""
+
 from __future__ import annotations
 
 from homeassistant.components.number import NumberEntity, NumberMode
@@ -8,18 +9,13 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN, CHANNEL_LEVELS
+from .const import CHANNEL_LEVELS, DOMAIN
 from .coordinator import KlipschCoordinator
 
 
-async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
-) -> None:
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback) -> None:
     coordinator: KlipschCoordinator = hass.data[DOMAIN][entry.entry_id]
-    async_add_entities([
-        KlipschChannelLevel(coordinator, entry, key, name, icon)
-        for key, name, icon in CHANNEL_LEVELS
-    ])
+    async_add_entities([KlipschChannelLevel(coordinator, entry, key, name, icon) for key, name, icon in CHANNEL_LEVELS])
 
 
 class KlipschChannelLevel(CoordinatorEntity[KlipschCoordinator], NumberEntity):

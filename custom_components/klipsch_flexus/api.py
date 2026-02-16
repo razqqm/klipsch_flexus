@@ -1,4 +1,5 @@
 """Klipsch Flexus HTTP API client."""
+
 from __future__ import annotations
 
 import asyncio
@@ -10,11 +11,11 @@ from urllib.parse import quote
 import aiohttp
 
 from .const import (
-    API_TIMEOUT_READ,
-    API_TIMEOUT_WRITE,
-    API_TIMEOUT_POWER,
     API_RETRIES,
     API_RETRY_DELAY,
+    API_TIMEOUT_POWER,
+    API_TIMEOUT_READ,
+    API_TIMEOUT_WRITE,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -59,21 +60,22 @@ class KlipschAPI:
         for attempt in range(retries + 1):
             try:
                 return await request_func()
-            except (asyncio.TimeoutError, aiohttp.ClientError, OSError) as err:
+            except (TimeoutError, aiohttp.ClientError, OSError) as err:
                 if attempt == retries:
                     raise
                 _LOGGER.debug(
                     "Retry %d/%d after %s: %s",
-                    attempt + 1, retries, type(err).__name__, err,
+                    attempt + 1,
+                    retries,
+                    type(err).__name__,
+                    err,
                 )
                 await asyncio.sleep(delay)
 
     async def get_data(self, path: str, timeout: float = API_TIMEOUT_READ) -> list:
         """GET /api/getData — serialized via lock."""
         async with self._lock:
-            return await self._request_with_retry(
-                lambda: self._do_get_data(path, timeout)
-            )
+            return await self._request_with_retry(lambda: self._do_get_data(path, timeout))
 
     async def _do_get_data(self, path: str, timeout: float) -> list:
         session = await self._ensure_session()
@@ -91,14 +93,15 @@ class KlipschAPI:
             raise
 
     async def set_data(
-        self, path: str, value: dict, roles: str = "value",
+        self,
+        path: str,
+        value: dict,
+        roles: str = "value",
         timeout: float = API_TIMEOUT_WRITE,
     ) -> str:
         """GET /api/setData — serialized via lock."""
         async with self._lock:
-            return await self._request_with_retry(
-                lambda: self._do_set_data(path, value, roles, timeout)
-            )
+            return await self._request_with_retry(lambda: self._do_set_data(path, value, roles, timeout))
 
     async def _do_set_data(self, path: str, value: dict, roles: str, timeout: float) -> str:
         session = await self._ensure_session()
@@ -110,9 +113,7 @@ class KlipschAPI:
     async def get_rows(self, path: str) -> dict:
         """GET /api/getRows — serialized via lock."""
         async with self._lock:
-            return await self._request_with_retry(
-                lambda: self._do_get_rows(path)
-            )
+            return await self._request_with_retry(lambda: self._do_get_rows(path))
 
     async def _do_get_rows(self, path: str) -> dict:
         session = await self._ensure_session()
@@ -127,28 +128,28 @@ class KlipschAPI:
         from .const import API_PATHS
 
         STATUS_PARAMS = {
-            "volume":       (API_PATHS["volume"],       lambda d: d[0].get("i32_", 0)),
-            "muted":        (API_PATHS["mute"],         lambda d: d[0].get("bool_", False)),
-            "input":        (API_PATHS["input"],        lambda d: d[0].get("cinemaPhysicalAudioInput", "unknown")),
-            "mode":         (API_PATHS["mode"],         lambda d: d[0].get("cinemaPostProcessorMode", "unknown")),
-            "night_mode":   (API_PATHS["night"],        lambda d: d[0].get("cinemaNightMode", "off")),
-            "dialog_mode":  (API_PATHS["dialog"],       lambda d: d[0].get("cinemaDialogMode", "off")),
-            "bass":         (API_PATHS["bass"],         lambda d: d[0].get("i32_", 0)),
-            "mid":          (API_PATHS["mid"],          lambda d: d[0].get("i32_", 0)),
-            "treble":       (API_PATHS["treble"],       lambda d: d[0].get("i32_", 0)),
-            "power":        (API_PATHS["power"],        lambda d: d[0].get("powerTarget", {}).get("target", "unknown")),
-            "decoder":      (API_PATHS["decoder"],      lambda d: d[0].get("cinemaAudioDecoder", "unknown")),
-            "eq_preset":    (API_PATHS["eq_preset"],    lambda d: d[0].get("cinemaEqPreset", "unknown")),
-            "dirac":        (API_PATHS["dirac"],        lambda d: d[0].get("i32_", -1)),
-            "sub_wired":    (API_PATHS["sub_wired"],    lambda d: d[0].get("i32_", 0)),
+            "volume": (API_PATHS["volume"], lambda d: d[0].get("i32_", 0)),
+            "muted": (API_PATHS["mute"], lambda d: d[0].get("bool_", False)),
+            "input": (API_PATHS["input"], lambda d: d[0].get("cinemaPhysicalAudioInput", "unknown")),
+            "mode": (API_PATHS["mode"], lambda d: d[0].get("cinemaPostProcessorMode", "unknown")),
+            "night_mode": (API_PATHS["night"], lambda d: d[0].get("cinemaNightMode", "off")),
+            "dialog_mode": (API_PATHS["dialog"], lambda d: d[0].get("cinemaDialogMode", "off")),
+            "bass": (API_PATHS["bass"], lambda d: d[0].get("i32_", 0)),
+            "mid": (API_PATHS["mid"], lambda d: d[0].get("i32_", 0)),
+            "treble": (API_PATHS["treble"], lambda d: d[0].get("i32_", 0)),
+            "power": (API_PATHS["power"], lambda d: d[0].get("powerTarget", {}).get("target", "unknown")),
+            "decoder": (API_PATHS["decoder"], lambda d: d[0].get("cinemaAudioDecoder", "unknown")),
+            "eq_preset": (API_PATHS["eq_preset"], lambda d: d[0].get("cinemaEqPreset", "unknown")),
+            "dirac": (API_PATHS["dirac"], lambda d: d[0].get("i32_", -1)),
+            "sub_wired": (API_PATHS["sub_wired"], lambda d: d[0].get("i32_", 0)),
             "sub_wireless": (API_PATHS["sub_wireless"], lambda d: d[0].get("i32_", 0)),
             # Surround channel levels
-            "back_height":  (API_PATHS["back_height"],  lambda d: d[0].get("i32_", 0)),
-            "back_left":    (API_PATHS["back_left"],    lambda d: d[0].get("i32_", 0)),
-            "back_right":   (API_PATHS["back_right"],   lambda d: d[0].get("i32_", 0)),
+            "back_height": (API_PATHS["back_height"], lambda d: d[0].get("i32_", 0)),
+            "back_left": (API_PATHS["back_left"], lambda d: d[0].get("i32_", 0)),
+            "back_right": (API_PATHS["back_right"], lambda d: d[0].get("i32_", 0)),
             "front_height": (API_PATHS["front_height"], lambda d: d[0].get("i32_", 0)),
-            "side_left":    (API_PATHS["side_left"],    lambda d: d[0].get("i32_", 0)),
-            "side_right":   (API_PATHS["side_right"],   lambda d: d[0].get("i32_", 0)),
+            "side_left": (API_PATHS["side_left"], lambda d: d[0].get("i32_", 0)),
+            "side_right": (API_PATHS["side_right"], lambda d: d[0].get("i32_", 0)),
         }
 
         result: dict = {"online": True}
@@ -182,14 +183,17 @@ class KlipschAPI:
 
     async def set_volume(self, level: int) -> None:
         from .const import API_PATHS
+
         await self.set_data(API_PATHS["volume"], {"type": "i32_", "i32_": level})
 
     async def set_mute(self, muted: bool) -> None:
         from .const import API_PATHS
+
         await self.set_data(API_PATHS["mute"], {"type": "bool_", "bool_": muted})
 
     async def set_input(self, source: str) -> None:
         from .const import API_PATHS
+
         await self.set_data(
             API_PATHS["input"],
             {"type": "cinemaPhysicalAudioInput", "cinemaPhysicalAudioInput": source},
@@ -197,6 +201,7 @@ class KlipschAPI:
 
     async def set_sound_mode(self, mode: str) -> None:
         from .const import API_PATHS
+
         await self.set_data(
             API_PATHS["mode"],
             {"type": "cinemaPostProcessorMode", "cinemaPostProcessorMode": mode},
@@ -204,6 +209,7 @@ class KlipschAPI:
 
     async def set_night_mode(self, mode: str) -> None:
         from .const import API_PATHS
+
         await self.set_data(
             API_PATHS["night"],
             {"type": "cinemaNightMode", "cinemaNightMode": mode},
@@ -211,6 +217,7 @@ class KlipschAPI:
 
     async def set_dialog_mode(self, mode: str) -> None:
         from .const import API_PATHS
+
         await self.set_data(
             API_PATHS["dialog"],
             {"type": "cinemaDialogMode", "cinemaDialogMode": mode},
@@ -219,6 +226,7 @@ class KlipschAPI:
     async def set_channel_level(self, param: str, value: int) -> None:
         """Set any channel level (bass/mid/treble/surround/sub) by key."""
         from .const import API_PATHS
+
         await self.set_data(API_PATHS[param], {"type": "i32_", "i32_": value})
 
     # Legacy aliases
@@ -227,6 +235,7 @@ class KlipschAPI:
 
     async def set_eq_preset(self, preset: str) -> None:
         from .const import API_PATHS
+
         await self.set_data(
             API_PATHS["eq_preset"],
             {"type": "cinemaEqPreset", "cinemaEqPreset": preset},
@@ -234,10 +243,12 @@ class KlipschAPI:
 
     async def set_dirac(self, filter_id: int) -> None:
         from .const import API_PATHS
+
         await self.set_data(API_PATHS["dirac"], {"type": "i32_", "i32_": filter_id})
 
     async def set_power(self, target: str) -> None:
         from .const import API_PATHS
+
         await self.set_data(
             API_PATHS["power_req"],
             {"target": target, "reason": "userActivity"},
@@ -247,10 +258,7 @@ class KlipschAPI:
 
     async def get_dirac_filters(self) -> list[dict]:
         data = await self.get_rows("dirac:filters")
-        return [
-            {"id": r["value"]["i32_"], "name": r["title"]}
-            for r in data.get("rows", [])
-        ]
+        return [{"id": r["value"]["i32_"], "name": r["title"]} for r in data.get("rows", [])]
 
     async def get_player_data(self) -> dict | None:
         """Fetch current player/media data."""

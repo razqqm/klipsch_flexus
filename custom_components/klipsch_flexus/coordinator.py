@@ -1,14 +1,15 @@
 """Data update coordinator for Klipsch Flexus."""
+
 from __future__ import annotations
 
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .api import KlipschAPI
-from .const import DOMAIN, SCAN_INTERVAL_SECONDS, COMMAND_REFRESH_DELAY
+from .const import COMMAND_REFRESH_DELAY, DOMAIN, SCAN_INTERVAL_SECONDS
 
 _LOGGER = logging.getLogger(__name__)
 
