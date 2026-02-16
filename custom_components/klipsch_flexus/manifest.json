@@ -1,7 +1,7 @@
 {
   "codeowners": ["@razqqm"],
   "config_flow": true,
-  "dependencies": [],
+  "dependencies": ["zeroconf"],
   "documentation": "https://github.com/razqqm/klipsch_flexus",
   "domain": "klipsch_flexus",
   "integration_type": "device",
@@ -9,5 +9,11 @@
   "issue_tracker": "https://github.com/razqqm/klipsch_flexus/issues",
   "name": "Klipsch Flexus",
   "requirements": [],
-  "version": "2.0.1"
+  "version": "2.1.0",
+  "zeroconf": [
+    {
+      "type": "_googlecast._tcp.local.",
+      "name": "flexus*"
+    }
+  ]
 }

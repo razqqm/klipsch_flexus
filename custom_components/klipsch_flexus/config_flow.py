@@ -6,6 +6,7 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_HOST
 from homeassistant.core import callback
+from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
 
 from .api import KlipschAPI
 from .const import CONF_SCAN_INTERVAL, DOMAIN, SCAN_INTERVAL_SECONDS
@@ -16,10 +17,65 @@ class KlipschFlexusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
 
+    def __init__(self) -> None:
+        """Initialize."""
+        self._discovered_host: str | None = None
+        self._discovered_name: str | None = None
+
     @staticmethod
     @callback
     def async_get_options_flow(config_entry):
         return KlipschOptionsFlow(config_entry)
+
+    async def async_step_zeroconf(self, discovery_info: ZeroconfServiceInfo) -> config_entries.ConfigFlowResult:
+        """Handle Zeroconf/mDNS discovery (Google Cast or AirPlay)."""
+        host = str(discovery_info.ip_address)
+        properties = discovery_info.properties
+
+        # Google Cast TXT records use 'md' for model, 'fn' for friendly name
+        model = properties.get("md", "")
+        friendly_name = properties.get("fn", "")
+        # AirPlay uses 'model' and the service name directly
+        if not model:
+            model = properties.get("model", "")
+
+        # Filter: only Klipsch devices, skip AirCast proxy
+        name_lower = discovery_info.name.lower()
+        model_lower = model.lower()
+        is_klipsch = (
+            "klipsch" in name_lower or "flexus" in name_lower or "klipsch" in model_lower or "flexus" in model_lower
+        )
+        is_aircast_proxy = properties.get("am") == "aircast"
+
+        if not is_klipsch or is_aircast_proxy:
+            return self.async_abort(reason="not_klipsch_device")
+
+        # Unique ID from Cast UUID or fallback to host
+        device_id = properties.get("id", host)
+        await self.async_set_unique_id(device_id)
+        self._abort_if_unique_id_configured(updates={CONF_HOST: host})
+
+        self._discovered_host = host
+        self._discovered_name = friendly_name or model or "Klipsch Flexus"
+        self.context["title_placeholders"] = {"name": self._discovered_name}
+        return await self.async_step_zeroconf_confirm()
+
+    async def async_step_zeroconf_confirm(self, user_input=None) -> config_entries.ConfigFlowResult:
+        """Confirm Zeroconf discovery."""
+        if user_input is not None:
+            return self.async_create_entry(
+                title=f"Klipsch Flexus ({self._discovered_host})",
+                data={CONF_HOST: self._discovered_host},
+            )
+
+        self._set_confirm_only()
+        return self.async_show_form(
+            step_id="zeroconf_confirm",
+            description_placeholders={
+                "name": self._discovered_name,
+                "host": self._discovered_host,
+            },
+        )
 
     async def async_step_user(self, user_input=None):
         errors = {}
