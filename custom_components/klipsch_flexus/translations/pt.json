@@ -44,7 +44,7 @@
         "name": "1. Modo noturno",
         "state": {
           "off": "Desligado",
-          "nightMode_1": "Ligado"
+          "night_mode_1": "Ligado"
         }
       },
       "dialog_mode": {

@@ -78,8 +78,11 @@ SOURCES_REVERSE = {v: k for k, v in SOURCES.items()}
 # Sound modes
 SOUND_MODES = ["movie", "music", "game", "sport", "night", "direct", "surround", "stereo"]
 
-# Night mode (raw API keys; display names via translations)
-NIGHT_MODES = ["off", "nightMode_1"]
+# Night mode (translation keys; display names via translations)
+NIGHT_MODES = ["off", "night_mode_1"]
+# Mapping: translation key → API value
+NIGHT_MODE_TO_API = {"night_mode_1": "nightMode_1", "off": "off"}
+NIGHT_MODE_FROM_API = {v: k for k, v in NIGHT_MODE_TO_API.items()}
 
 # Dialog mode (raw API keys; display names via translations)
 DIALOG_MODES = ["off", "dialog_1", "dialog_2", "dialog_3"]

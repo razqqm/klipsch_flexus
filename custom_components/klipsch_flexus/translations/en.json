@@ -44,7 +44,7 @@
         "name": "1. Night Mode",
         "state": {
           "off": "Off",
-          "nightMode_1": "On"
+          "night_mode_1": "On"
         }
       },
       "dialog_mode": {

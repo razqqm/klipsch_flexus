@@ -44,7 +44,7 @@
         "name": "1. Modalit\u00e0 notturna",
         "state": {
           "off": "Spento",
-          "nightMode_1": "Acceso"
+          "night_mode_1": "Acceso"
         }
       },
       "dialog_mode": {

@@ -44,7 +44,7 @@
         "name": "1. Ночной режим",
         "state": {
           "off": "Выкл",
-          "nightMode_1": "Вкл"
+          "night_mode_1": "Вкл"
         }
       },
       "dialog_mode": {
