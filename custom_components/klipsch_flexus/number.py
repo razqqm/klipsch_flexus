@@ -15,7 +15,7 @@ from .coordinator import KlipschCoordinator
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback) -> None:
     coordinator: KlipschCoordinator = hass.data[DOMAIN][entry.entry_id]
-    async_add_entities([KlipschChannelLevel(coordinator, entry, key, name, icon) for key, name, icon in CHANNEL_LEVELS])
+    async_add_entities([KlipschChannelLevel(coordinator, entry, key, icon) for key, icon in CHANNEL_LEVELS])
 
 
 class KlipschChannelLevel(CoordinatorEntity[KlipschCoordinator], NumberEntity):
@@ -33,7 +33,6 @@ class KlipschChannelLevel(CoordinatorEntity[KlipschCoordinator], NumberEntity):
         coordinator: KlipschCoordinator,
         entry: ConfigEntry,
         param: str,
-        name: str,
         icon: str,
     ) -> None:
         super().__init__(coordinator)

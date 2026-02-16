@@ -16,6 +16,8 @@ from .const import (
     API_TIMEOUT_POWER,
     API_TIMEOUT_READ,
     API_TIMEOUT_WRITE,
+    NIGHT_MODE_FROM_API,
+    NIGHT_MODE_TO_API,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -132,7 +134,7 @@ class KlipschAPI:
             "muted": (API_PATHS["mute"], lambda d: d[0].get("bool_", False)),
             "input": (API_PATHS["input"], lambda d: d[0].get("cinemaPhysicalAudioInput", "unknown")),
             "mode": (API_PATHS["mode"], lambda d: d[0].get("cinemaPostProcessorMode", "unknown")),
-            "night_mode": (API_PATHS["night"], lambda d: d[0].get("cinemaNightMode", "off")),
+            "night_mode": (API_PATHS["night"], lambda d: NIGHT_MODE_FROM_API.get(d[0].get("cinemaNightMode", "off"), "off")),
             "dialog_mode": (API_PATHS["dialog"], lambda d: d[0].get("cinemaDialogMode", "off")),
             "bass": (API_PATHS["bass"], lambda d: d[0].get("i32_", 0)),
             "mid": (API_PATHS["mid"], lambda d: d[0].get("i32_", 0)),
@@ -210,9 +212,10 @@ class KlipschAPI:
     async def set_night_mode(self, mode: str) -> None:
         from .const import API_PATHS
 
+        api_val = NIGHT_MODE_TO_API.get(mode, mode)
         await self.set_data(
             API_PATHS["night"],
-            {"type": "cinemaNightMode", "cinemaNightMode": mode},
+            {"type": "cinemaNightMode", "cinemaNightMode": api_val},
         )
 
     async def set_dialog_mode(self, mode: str) -> None:
