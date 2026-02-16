@@ -115,6 +115,29 @@
           "on": "Encendido",
           "standby": "En espera"
         }
+      },
+      "active_input": {
+        "name": "Estado: Entrada activa",
+        "state": {
+          "hdmiarc": "TV ARC",
+          "hdmi1": "HDMI",
+          "spdif": "SPDIF",
+          "bluetooth": "Bluetooth",
+          "googlecast": "Google Cast"
+        }
+      },
+      "active_sound_mode": {
+        "name": "Estado: Modo de sonido",
+        "state": {
+          "movie": "Película",
+          "music": "Música",
+          "game": "Juego",
+          "sport": "Deporte",
+          "night": "Noche",
+          "direct": "Directo",
+          "surround": "Surround",
+          "stereo": "Estéreo"
+        }
       }
     }
   }

@@ -9,7 +9,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN
+from .const import DOMAIN, SOUND_MODES, SOURCES
 from .coordinator import KlipschCoordinator
 
 
@@ -19,6 +19,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
         [
             KlipschResponseTimeSensor(coordinator, entry),
             KlipschStatusSensor(coordinator, entry),
+            KlipschInputSensor(coordinator, entry),
+            KlipschSoundModeSensor(coordinator, entry),
         ]
     )
 
@@ -88,8 +90,6 @@ class KlipschStatusSensor(CoordinatorEntity[KlipschCoordinator], SensorEntity):
             return {}
         attrs = {
             "decoder": data.get("decoder", "unknown"),
-            "input": data.get("input", "unknown"),
-            "sound_mode": data.get("mode", "unknown"),
             "failed_params": data.get("failed_params", 0),
             "poll_time_ms": data.get("poll_time_ms"),
         }
@@ -99,3 +99,55 @@ class KlipschStatusSensor(CoordinatorEntity[KlipschCoordinator], SensorEntity):
             attrs["media_title"] = player.get("title", "")
             attrs["media_artist"] = player.get("artist", "")
         return attrs
+
+
+class KlipschInputSensor(CoordinatorEntity[KlipschCoordinator], SensorEntity):
+    """Active audio input source."""
+
+    _attr_has_entity_name = True
+    _attr_translation_key = "active_input"
+    _attr_icon = "mdi:audio-input-stereo-minijack"
+    _attr_device_class = SensorDeviceClass.ENUM
+    _attr_options = list(SOURCES.keys())
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
+
+    def __init__(self, coordinator: KlipschCoordinator, entry: ConfigEntry) -> None:
+        super().__init__(coordinator)
+        self._attr_unique_id = f"{entry.entry_id}_active_input"
+        self._attr_device_info = {"identifiers": {(DOMAIN, entry.entry_id)}}
+
+    @property
+    def native_value(self) -> str | None:
+        data = self.coordinator.data or {}
+        if not data.get("online"):
+            return None
+        return data.get("input")
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        data = self.coordinator.data or {}
+        raw = data.get("input", "")
+        return {"display_name": SOURCES.get(raw, raw)}
+
+
+class KlipschSoundModeSensor(CoordinatorEntity[KlipschCoordinator], SensorEntity):
+    """Active sound mode."""
+
+    _attr_has_entity_name = True
+    _attr_translation_key = "active_sound_mode"
+    _attr_icon = "mdi:surround-sound"
+    _attr_device_class = SensorDeviceClass.ENUM
+    _attr_options = SOUND_MODES
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
+
+    def __init__(self, coordinator: KlipschCoordinator, entry: ConfigEntry) -> None:
+        super().__init__(coordinator)
+        self._attr_unique_id = f"{entry.entry_id}_active_sound_mode"
+        self._attr_device_info = {"identifiers": {(DOMAIN, entry.entry_id)}}
+
+    @property
+    def native_value(self) -> str | None:
+        data = self.coordinator.data or {}
+        if not data.get("online"):
+            return None
+        return data.get("mode")
