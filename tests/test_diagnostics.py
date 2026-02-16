@@ -1,7 +1,8 @@
 """Tests for Klipsch Flexus diagnostics."""
+
 from __future__ import annotations
 
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import MagicMock
 
 from custom_components.klipsch_flexus.diagnostics import (
     async_get_config_entry_diagnostics,

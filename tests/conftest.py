@@ -1,4 +1,5 @@
 """Fixtures for Klipsch Flexus tests."""
+
 from __future__ import annotations
 
 from unittest.mock import AsyncMock, patch
@@ -40,14 +41,10 @@ MOCK_STATUS = {
 @pytest.fixture
 def mock_api():
     """Create a mocked KlipschAPI."""
-    with patch(
-        "custom_components.klipsch_flexus.api.KlipschAPI", autospec=True
-    ) as mock_cls:
+    with patch("custom_components.klipsch_flexus.api.KlipschAPI", autospec=True) as mock_cls:
         api = mock_cls.return_value
         api.get_status = AsyncMock(return_value=MOCK_STATUS.copy())
-        api.get_dirac_filters = AsyncMock(
-            return_value=[{"id": 1, "name": "Filter 1"}, {"id": 2, "name": "Filter 2"}]
-        )
+        api.get_dirac_filters = AsyncMock(return_value=[{"id": 1, "name": "Filter 1"}, {"id": 2, "name": "Filter 2"}])
         api.get_player_data = AsyncMock(return_value=None)
         api.set_volume = AsyncMock()
         api.set_mute = AsyncMock()

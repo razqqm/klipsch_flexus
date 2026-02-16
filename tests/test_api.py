@@ -1,8 +1,8 @@
 """Tests for Klipsch Flexus API client."""
+
 from __future__ import annotations
 
-import asyncio
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
 import aiohttp
 import pytest
@@ -44,7 +44,7 @@ async def test_get_data_retry_on_timeout(api: KlipschAPI) -> None:
         nonlocal call_count
         call_count += 1
         if call_count < 3:
-            raise asyncio.TimeoutError()
+            raise TimeoutError()
         mock_resp = AsyncMock()
         mock_resp.json = AsyncMock(return_value=[{"i32_": 10}])
         mock_resp.__aenter__ = AsyncMock(return_value=mock_resp)
@@ -65,12 +65,12 @@ async def test_get_data_retry_on_timeout(api: KlipschAPI) -> None:
 async def test_get_data_all_retries_fail(api: KlipschAPI) -> None:
     """Test that exception is raised after all retries fail."""
     mock_session = AsyncMock(spec=aiohttp.ClientSession)
-    mock_session.get = MagicMock(side_effect=asyncio.TimeoutError())
+    mock_session.get = MagicMock(side_effect=TimeoutError())
     mock_session.closed = False
     api._session = mock_session
     api._own_session = False
 
-    with pytest.raises(asyncio.TimeoutError):
+    with pytest.raises(TimeoutError):
         await api.get_data("player:volume")
 
 
@@ -88,7 +88,7 @@ async def test_get_status_graceful_degradation(api: KlipschAPI) -> None:
         if "powerTarget" in path or "powermanager" in path:
             return [{"powerTarget": {"target": "on"}}]
         # Fail for everything else
-        raise asyncio.TimeoutError()
+        raise TimeoutError()
 
     api.get_data = mock_get_data
     result = await api.get_status()
@@ -100,7 +100,7 @@ async def test_get_status_graceful_degradation(api: KlipschAPI) -> None:
 
 async def test_get_status_all_fail(api: KlipschAPI) -> None:
     """Test offline status when all params fail."""
-    api.get_data = AsyncMock(side_effect=asyncio.TimeoutError())
+    api.get_data = AsyncMock(side_effect=TimeoutError())
     result = await api.get_status()
     assert result == {"online": False}
 
