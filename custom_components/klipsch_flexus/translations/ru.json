@@ -115,6 +115,29 @@
           "on": "Включено",
           "standby": "Ожидание"
         }
+      },
+      "active_input": {
+        "name": "Статус: Активный вход",
+        "state": {
+          "hdmiarc": "TV ARC",
+          "hdmi1": "HDMI",
+          "spdif": "SPDIF",
+          "bluetooth": "Bluetooth",
+          "googlecast": "Google Cast"
+        }
+      },
+      "active_sound_mode": {
+        "name": "Статус: Режим звука",
+        "state": {
+          "movie": "Кино",
+          "music": "Музыка",
+          "game": "Игра",
+          "sport": "Спорт",
+          "night": "Ночной",
+          "direct": "Прямой",
+          "surround": "Объёмный",
+          "stereo": "Стерео"
+        }
       }
     }
   }
