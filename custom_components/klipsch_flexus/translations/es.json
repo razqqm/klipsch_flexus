@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Klipsch Flexus",
-        "description": "Introduzca la direcci\u00f3n IP de su barra de sonido Klipsch Flexus CORE 300.",
+        "description": "Introduzca la direcci\u00f3n IP de su barra de sonido Klipsch Flexus CORE 300.\n\nEl dispositivo debe estar preconfigurado a trav\u00e9s de la aplicaci\u00f3n Klipsch Connect Plus.",
         "data": {
           "host": "Direcci\u00f3n IP"
         }

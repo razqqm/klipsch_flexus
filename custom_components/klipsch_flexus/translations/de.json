@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Klipsch Flexus",
-        "description": "Geben Sie die IP-Adresse Ihrer Klipsch Flexus CORE 300 Soundbar ein.",
+        "description": "Geben Sie die IP-Adresse Ihrer Klipsch Flexus CORE 300 Soundbar ein.\n\nDas Ger\u00e4t muss vorab \u00fcber die Klipsch Connect Plus App eingerichtet werden.",
         "data": {
           "host": "IP-Adresse"
         }

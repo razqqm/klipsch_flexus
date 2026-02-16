@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Klipsch Flexus",
-        "description": "Entrez l'adresse IP de votre barre de son Klipsch Flexus CORE 300.",
+        "description": "Entrez l'adresse IP de votre barre de son Klipsch Flexus CORE 300.\n\nL'appareil doit \u00eatre pr\u00e9alablement configur\u00e9 via l'application Klipsch Connect Plus.",
         "data": {
           "host": "Adresse IP"
         }

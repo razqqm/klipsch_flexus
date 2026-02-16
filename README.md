@@ -11,7 +11,7 @@
 
 Home Assistant integration for **Klipsch Flexus CORE 300** (5.1.2-Channel Dolby Atmos Sound Bar).
 
-Controls the soundbar via its native local HTTP API — no cloud, no delays.
+Partially replaces the **Klipsch Connect Plus** app — controls the soundbar via its native local HTTP API, no cloud, no delays. Currently only supports a device that has been pre-configured through the official app.
 
 ![Klipsch Flexus CORE 300](custom_components/klipsch_flexus/images/icon.png)
 
@@ -46,13 +46,14 @@ Controls the soundbar via its native local HTTP API — no cloud, no delays.
 
 ## Prerequisites
 
-> **The soundbar must be already configured and working via the official Klipsch Stream app.**
+> **The soundbar must be already configured and working via the official Klipsch Connect Plus app.**
 >
 > This integration communicates with the soundbar's local HTTP API, which is only available
-> after the initial setup through the Klipsch Stream app (Wi-Fi configuration, firmware updates,
+> after the initial setup through the Klipsch Connect Plus app (Wi-Fi configuration, firmware updates,
 > speaker pairing, Dirac calibration, etc.).
 >
-> The integration does NOT replace the official app — it extends control into Home Assistant.
+> The integration partially replaces the Klipsch Connect Plus app for day-to-day control,
+> but the app is still required for initial setup and advanced configuration.
 
 ## Installation
 
@@ -131,9 +132,9 @@ This integration includes several mechanisms to ensure reliable operation:
 ## Known Limitations
 
 - Only one soundbar per integration entry (add multiple via separate entries)
-- No support for multi-room / wireless surround speaker group management (use Klipsch Stream app)
+- No support for multi-room / wireless surround speaker group management (use Klipsch Connect Plus app)
 - AirPlay and Cast protocols are not used — only the native HTTP API on port 80
-- The soundbar must be set up initially via the official Klipsch Stream app
+- The soundbar must be set up initially via the official Klipsch Connect Plus app
 
 ## License
 

@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Klipsch Flexus",
-        "description": "Insira o endere\u00e7o IP da sua soundbar Klipsch Flexus CORE 300.",
+        "description": "Insira o endere\u00e7o IP da sua soundbar Klipsch Flexus CORE 300.\n\nO dispositivo deve ser previamente configurado pelo aplicativo Klipsch Connect Plus.",
         "data": {
           "host": "Endere\u00e7o IP"
         }
