@@ -287,3 +287,19 @@ class KlipschAPI:
             {"control": control},
             roles="activate",
         )
+
+    async def get_device_info(self) -> dict | None:
+        """Fetch device info from Google Cast API (port 8008).
+
+        Returns eureka_info with name, mac_address, build_version, uptime, etc.
+        Useful for device identification and firmware version display.
+        """
+        session = await self._ensure_session()
+        url = f"http://{self._host}:8008/setup/eureka_info"
+        try:
+            async with session.get(url, timeout=aiohttp.ClientTimeout(total=5)) as resp:
+                if resp.status == 200:
+                    return await resp.json(content_type=None)
+        except Exception:
+            _LOGGER.debug("Failed to get eureka_info from port 8008")
+        return None

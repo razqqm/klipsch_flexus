@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from datetime import UTC, datetime
+
 from homeassistant.components.media_player import (
     MediaPlayerEntity,
     MediaPlayerEntityFeature,
@@ -9,7 +11,7 @@ from homeassistant.components.media_player import (
     MediaType,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -44,15 +46,30 @@ class KlipschMediaPlayer(CoordinatorEntity[KlipschCoordinator], MediaPlayerEntit
         self._entry = entry
         self._attr_unique_id = f"{entry.entry_id}_media_player"
         host = entry.data.get("host", "")
-        self._attr_device_info = {
+        device_info: dict = {
             "identifiers": {(DOMAIN, entry.entry_id)},
             "name": "Klipsch Flexus CORE 300",
             "manufacturer": "Klipsch",
             "model": "Flexus CORE 300",
             "configuration_url": f"http://{host}",
         }
+        # Enrich from eureka_info (Google Cast API, port 8008)
+        eureka = coordinator.device_info
+        if eureka:
+            if eureka.get("name"):
+                device_info["name"] = eureka["name"]
+            if eureka.get("cast_build_revision"):
+                device_info["sw_version"] = eureka["cast_build_revision"]
+            if eureka.get("mac_address"):
+                device_info["connections"] = {("mac", eureka["mac_address"].lower())}
+        self._attr_device_info = device_info
         self._attr_source_list = list(SOURCES.values())
         self._attr_sound_mode_list = SOUND_MODES
+        # Media position tracking (API has no position, only duration)
+        self._position: int = 0  # seconds
+        self._position_updated_at: datetime | None = None
+        self._prev_player_state: str | None = None
+        self._prev_track_title: str | None = None
 
     def _player_data(self) -> dict:
         data = self.coordinator.data or {}
@@ -72,6 +89,35 @@ class KlipschMediaPlayer(CoordinatorEntity[KlipschCoordinator], MediaPlayerEntit
         player = self._player_data()
         meta = player.get("trackRoles", {}).get("mediaData", {}).get("metaData", {})
         return meta.get("externalAppName")
+
+    # --- Media position tracking ---
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Track media position based on playback state transitions."""
+        player = self._player_data()
+        state = player.get("state")
+        title = player.get("trackRoles", {}).get("title")
+        now = datetime.now(UTC)
+
+        if state == "playing":
+            # New track or transition from non-playing → reset position
+            if title != self._prev_track_title or self._prev_player_state != "playing":
+                self._position = 0
+                self._position_updated_at = now
+        elif state == "paused" and self._prev_player_state == "playing":
+            # Freeze: calculate elapsed time since last update
+            if self._position_updated_at is not None:
+                elapsed = (now - self._position_updated_at).total_seconds()
+                self._position = int(self._position + elapsed)
+                self._position_updated_at = now
+        elif state not in ("playing", "paused"):
+            self._position = 0
+            self._position_updated_at = None
+
+        self._prev_player_state = state
+        self._prev_track_title = title
+        super()._handle_coordinator_update()
 
     # --- Optimistic update helper ---
 
@@ -173,6 +219,20 @@ class KlipschMediaPlayer(CoordinatorEntity[KlipschCoordinator], MediaPlayerEntit
         duration_ms = status.get("duration")
         if duration_ms is not None:
             return duration_ms // 1000
+        return None
+
+    @property
+    def media_position(self) -> int | None:
+        player = self._player_data()
+        if player.get("state") in ("playing", "paused"):
+            return self._position
+        return None
+
+    @property
+    def media_position_updated_at(self) -> datetime | None:
+        player = self._player_data()
+        if player.get("state") in ("playing", "paused"):
+            return self._position_updated_at
         return None
 
     @property

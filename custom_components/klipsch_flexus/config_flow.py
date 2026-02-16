@@ -99,10 +99,21 @@ class KlipschFlexusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             try:
                 status = await api.get_status()
                 if status.get("online"):
-                    await self.async_set_unique_id(host)
+                    # Try eureka_info for stable unique ID (MAC) and model check
+                    device_info = await api.get_device_info()
+                    unique_id = host
+                    title = f"Klipsch Flexus ({host})"
+                    if device_info:
+                        mac = device_info.get("mac_address")
+                        if mac:
+                            unique_id = mac.replace(":", "").lower()
+                        name = device_info.get("name", "")
+                        if name:
+                            title = name
+                    await self.async_set_unique_id(unique_id)
                     self._abort_if_unique_id_configured()
                     return self.async_create_entry(
-                        title=f"Klipsch Flexus ({host})",
+                        title=title,
                         data={CONF_HOST: host},
                     )
                 else:
