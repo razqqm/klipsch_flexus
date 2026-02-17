@@ -150,6 +150,12 @@ El Klipsch Flexus tiene un **servidor HTTP de un solo hilo** que procesa una pet
 | Actualizaciones lentas | Aumente el intervalo de consulta en Opciones |
 | La integración no carga | Revise los logs de HA por errores de importación. Se requiere HA 2024.4.0+ |
 
+## Versión Legacy (sin integración personalizada)
+
+Si prefiere no instalar una integración personalizada, consulte la carpeta [`legacy/`](../legacy/) para un enfoque autónomo usando solo componentes integrados de HA (`command_line` sensor + `rest_command` + scripts).
+
+Esta fue la implementación original antes de crear la integración. Proporciona control básico de volumen/entrada/modo a través de botones del panel, pero sin entidad de reproductor multimedia, controles de reproducción, descubrimiento automático ni traducciones. Consulte [`legacy/README.md`](../legacy/README.md).
+
 ## Limitaciones conocidas
 
 - Una barra de sonido por entrada de integración (agregue varias por separado)
