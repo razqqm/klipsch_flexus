@@ -84,7 +84,7 @@ Full UI translation in **7 languages**: English, Russian, German, Spanish, Frenc
 The soundbar is automatically discovered on your network via **mDNS / Zeroconf** (Google Cast protocol).
 
 When powered on, Home Assistant will detect the soundbar and display a notification:
-> **Klipsch Flexus CORE 300** found at `10.0.1.51`. Do you want to add this soundbar?
+> **Klipsch Flexus CORE 300** found at `192.168.1.100`. Do you want to add this soundbar?
 
 **How it works:**
 - Soundbar announces itself as `Flexus-Core-*` via `_googlecast._tcp` mDNS service
@@ -150,6 +150,12 @@ The Klipsch Flexus has a **single-threaded HTTP server** that processes one requ
 | Entities unavailable | The Klipsch app may be polling simultaneously — close it and retry |
 | Slow updates | Increase poll interval in Options (Settings > Devices > Klipsch Flexus > Configure) |
 | Integration not loading | Check Home Assistant logs for import errors. Ensure you're on HA 2024.4.0+ |
+
+## Legacy Alternative (no custom integration)
+
+If you prefer not to install a custom integration, see the [`legacy/`](legacy/) folder for a standalone approach using only built-in HA components (`command_line` sensor + `rest_command` + scripts).
+
+This was the original implementation before the custom integration was created. It provides basic volume/input/mode control via dashboard buttons but lacks media player entity, playback controls, auto-discovery, and translations. See [`legacy/README.md`](legacy/README.md) for setup instructions and a feature comparison.
 
 ## Known Limitations
 

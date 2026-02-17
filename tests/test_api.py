@@ -13,7 +13,7 @@ from custom_components.klipsch_flexus.api import KlipschAPI
 @pytest.fixture
 def api():
     """Create an API client with mocked session."""
-    return KlipschAPI("10.0.1.51")
+    return KlipschAPI("192.168.1.100")
 
 
 async def test_get_data_success(api: KlipschAPI) -> None:

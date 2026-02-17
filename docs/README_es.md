@@ -83,7 +83,7 @@ Traducción completa de la interfaz en **7 idiomas**: inglés, ruso, alemán, es
 La barra de sonido se descubre automáticamente en su red mediante **mDNS / Zeroconf** (protocolo Google Cast).
 
 Con la barra de sonido encendida, Home Assistant mostrará una notificación:
-> Se encontró **Klipsch Flexus CORE 300** en `10.0.1.51`. ¿Desea agregar esta barra de sonido?
+> Se encontró **Klipsch Flexus CORE 300** en `192.168.1.100`. ¿Desea agregar esta barra de sonido?
 
 **Cómo funciona:**
 - La barra se anuncia como `Flexus-Core-*` a través del servicio mDNS `_googlecast._tcp`

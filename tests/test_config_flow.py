@@ -36,8 +36,8 @@ MOCK_ZEROCONF_DISCOVERY = ZeroconfServiceInfo(
 )
 
 MOCK_AIRCAST_DISCOVERY = ZeroconfServiceInfo(
-    ip_address=ip_address("10.0.1.45"),
-    ip_addresses=[ip_address("10.0.1.45")],
+    ip_address=ip_address("192.168.1.100"),
+    ip_addresses=[ip_address("192.168.1.100")],
     hostname="aircast-proxy.local.",
     name="Klipsch-Flexus-CORE-300._googlecast._tcp.local.",
     port=8009,
@@ -124,8 +124,8 @@ async def test_zeroconf_rejects_aircast_proxy(hass: HomeAssistant) -> None:
 async def test_zeroconf_rejects_non_klipsch(hass: HomeAssistant) -> None:
     """Test Zeroconf rejects non-Klipsch Cast devices."""
     non_klipsch = ZeroconfServiceInfo(
-        ip_address=ip_address("10.0.1.99"),
-        ip_addresses=[ip_address("10.0.1.99")],
+        ip_address=ip_address("192.168.1.200"),
+        ip_addresses=[ip_address("192.168.1.200")],
         hostname="chromecast.local.",
         name="Chromecast-Ultra._googlecast._tcp.local.",
         port=8009,

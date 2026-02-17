@@ -83,7 +83,7 @@ Tradução completa da interface em **7 idiomas**: inglês, russo, alemão, espa
 A soundbar é descoberta automaticamente na sua rede via **mDNS / Zeroconf** (protocolo Google Cast).
 
 Com a soundbar ligada, o Home Assistant mostrará uma notificação:
-> Encontrado **Klipsch Flexus CORE 300** em `10.0.1.51`. Deseja adicionar esta soundbar?
+> Encontrado **Klipsch Flexus CORE 300** em `192.168.1.100`. Deseja adicionar esta soundbar?
 
 **Como funciona:**
 - A soundbar se anuncia como `Flexus-Core-*` via serviço mDNS `_googlecast._tcp`

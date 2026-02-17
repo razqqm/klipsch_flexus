@@ -8,7 +8,7 @@ import pytest
 
 from custom_components.klipsch_flexus.const import DOMAIN
 
-MOCK_HOST = "10.0.1.51"
+MOCK_HOST = "192.168.1.100"
 
 MOCK_STATUS = {
     "online": True,
