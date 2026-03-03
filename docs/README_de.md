@@ -97,7 +97,7 @@ Falls die automatische Erkennung nicht funktioniert (z.B. Netzwerkisolation), k�
 | Parameter | Standard | Beschreibung |
 |-----------|----------|-------------|
 | Host | — | IP-Adresse der Soundbar (erforderlich) |
-| Abfrageintervall | 15 s | Konfigurierbar über Optionen (5–120 s) |
+| Abfrageintervall | 15 s (60 s im Standby) | Konfigurierbar über Optionen (5–120 s); wird im Standby automatisch reduziert |
 
 **Tipp:** Weisen Sie der Soundbar eine statische IP / DHCP-Reservierung zu.
 
@@ -121,6 +121,7 @@ Die Klipsch Flexus hat einen **Single-Thread HTTP-Server**, der jeweils eine Anf
 | Adaptive Timeouts | 8 s Lesen, 10 s Schreiben, 15 s Ein/Aus-Befehle |
 | Graceful Degradation | Fehlgeschlagene Lesevorgänge verwenden zuletzt bekannte Werte |
 | Optimistische Updates | UI aktualisiert sofort, dann durch verzögertes Polling bestätigt |
+| **Standby-bewusstes Polling** | Energiezustand wird zuerst abgefragt; im Standby nur 1 Anfrage statt 20+, zwischengespeicherte Werte bleiben erhalten, Abfrageintervall auf 60 s reduziert |
 
 ## Entitäten
 
@@ -138,8 +139,10 @@ Die Klipsch Flexus hat einen **Single-Thread HTTP-Server**, der jeweils eine Anf
 | Bass / Mid / Treble | Number (x3) | Konfiguration |
 | Antwortzeit | Sensor | Diagnose |
 | Gerätestatus | Sensor | Diagnose |
+| Aktiver Eingang | Sensor | Diagnose |
+| Aktiver Klangmodus | Sensor | Diagnose |
 
-**Gesamt: 18 Entitäten** (1 Media Player + 4 Selects + 11 Numbers + 2 Sensors)
+**Gesamt: 20 Entitäten** (1 Media Player + 4 Selects + 11 Numbers + 4 Sensors)
 
 ## Fehlerbehebung
 
