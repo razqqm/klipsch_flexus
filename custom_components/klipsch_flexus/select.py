@@ -44,6 +44,16 @@ class KlipschNightModeSelect(CoordinatorEntity[KlipschCoordinator], SelectEntity
         self._attr_options = NIGHT_MODES
 
     @property
+    def available(self) -> bool:
+        """Unavailable when device is offline or in standby (can't control)."""
+        data = self.coordinator.data or {}
+        if not data.get("online"):
+            return False
+        if data.get("power") == "networkStandby":
+            return False
+        return super().available
+
+    @property
     def current_option(self) -> str | None:
         data = self.coordinator.data or {}
         if not data.get("online"):
@@ -73,6 +83,16 @@ class KlipschDialogModeSelect(CoordinatorEntity[KlipschCoordinator], SelectEntit
         self._attr_options = DIALOG_MODES
 
     @property
+    def available(self) -> bool:
+        """Unavailable when device is offline or in standby (can't control)."""
+        data = self.coordinator.data or {}
+        if not data.get("online"):
+            return False
+        if data.get("power") == "networkStandby":
+            return False
+        return super().available
+
+    @property
     def current_option(self) -> str | None:
         data = self.coordinator.data or {}
         if not data.get("online"):
@@ -100,6 +120,26 @@ class KlipschEqPresetSelect(CoordinatorEntity[KlipschCoordinator], SelectEntity)
         self._attr_unique_id = f"{entry.entry_id}_eq_preset"
         self._attr_device_info = {"identifiers": {(DOMAIN, entry.entry_id)}}
         self._attr_options = EQ_PRESETS
+
+    @property
+    def available(self) -> bool:
+        """Unavailable when device is offline or in standby (can't control)."""
+        data = self.coordinator.data or {}
+        if not data.get("online"):
+            return False
+        if data.get("power") == "networkStandby":
+            return False
+        return super().available
+
+    @property
+    def available(self) -> bool:
+        """Unavailable when device is offline or in standby (can't control)."""
+        data = self.coordinator.data or {}
+        if not data.get("online"):
+            return False
+        if data.get("power") == "networkStandby":
+            return False
+        return super().available
 
     @property
     def current_option(self) -> str | None:
@@ -142,6 +182,16 @@ class KlipschDiracSelect(CoordinatorEntity[KlipschCoordinator], SelectEntity):
             self._attr_options = ["off"]
             self._dirac_map = {"off": -1}
             self._dirac_reverse = {-1: "off"}
+
+    @property
+    def available(self) -> bool:
+        """Unavailable when device is offline or in standby (can't control)."""
+        data = self.coordinator.data or {}
+        if not data.get("online"):
+            return False
+        if data.get("power") == "networkStandby":
+            return False
+        return super().available
 
     @property
     def current_option(self) -> str | None:

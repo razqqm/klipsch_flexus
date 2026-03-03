@@ -126,10 +126,16 @@ class KlipschAPI:
     # --- Status polling with graceful degradation ---
 
     async def get_status(self) -> dict:
-        """Poll device status. Individual failures fall back to last-known values."""
+        """Poll device status. Individual failures fall back to last-known values.
+
+        When the soundbar is in standby (networkStandby), only the power state
+        is polled — the device is very slow to respond in this mode, so we skip
+        all other parameters and keep cached values. This prevents response-time
+        spikes (up to 40 s) and sensor unavailability during standby.
+        """
         from .const import API_PATHS
 
-        STATUS_PARAMS = {
+        ALL_PARAMS = {
             "volume": (API_PATHS["volume"], lambda d: d[0].get("i32_", 0)),
             "muted": (API_PATHS["mute"], lambda d: d[0].get("bool_", False)),
             "input": (API_PATHS["input"], lambda d: d[0].get("cinemaPhysicalAudioInput", "unknown")),
@@ -142,7 +148,6 @@ class KlipschAPI:
             "bass": (API_PATHS["bass"], lambda d: d[0].get("i32_", 0)),
             "mid": (API_PATHS["mid"], lambda d: d[0].get("i32_", 0)),
             "treble": (API_PATHS["treble"], lambda d: d[0].get("i32_", 0)),
-            "power": (API_PATHS["power"], lambda d: d[0].get("powerTarget", {}).get("target", "unknown")),
             "decoder": (API_PATHS["decoder"], lambda d: d[0].get("cinemaAudioDecoder", "unknown")),
             "eq_preset": (API_PATHS["eq_preset"], lambda d: d[0].get("cinemaEqPreset", "unknown")),
             "dirac": (API_PATHS["dirac"], lambda d: d[0].get("i32_", -1)),
@@ -157,11 +162,35 @@ class KlipschAPI:
             "side_right": (API_PATHS["side_right"], lambda d: d[0].get("i32_", 0)),
         }
 
-        result: dict = {"online": True}
-        fail_count = 0
         poll_start = time.monotonic()
 
-        for key, (path, parser) in STATUS_PARAMS.items():
+        # ── Step 1: probe power state first ──
+        try:
+            power_data = await self.get_data(API_PATHS["power"])
+            power = power_data[0].get("powerTarget", {}).get("target", "unknown")
+        except Exception:
+            # Cannot reach device at all → offline
+            return {"online": False}
+
+        # ── Step 2: standby → return cached data, skip heavy polling ──
+        if power == "networkStandby":
+            result: dict = {"online": True, "power": power}
+            # Preserve all previously known values so sensors stay available
+            for key in ALL_PARAMS:
+                cached = self._last_status.get(key)
+                if cached is not None:
+                    result[key] = cached
+            result["poll_time_ms"] = round((time.monotonic() - poll_start) * 1000)
+            result["failed_params"] = 0
+            self._last_status = result
+            _LOGGER.debug("Device in standby — lightweight poll (%d ms)", result["poll_time_ms"])
+            return result
+
+        # ── Step 3: device is ON → full poll ──
+        result = {"online": True, "power": power}
+        fail_count = 0
+
+        for key, (path, parser) in ALL_PARAMS.items():
             try:
                 data = await self.get_data(path)
                 result[key] = parser(data)
@@ -175,8 +204,8 @@ class KlipschAPI:
                 else:
                     _LOGGER.debug("No cached value for %s, skipping", key)
 
-        # If ALL parameters failed, device is truly offline
-        if fail_count == len(STATUS_PARAMS):
+        # If ALL parameters failed (besides power), device is truly offline
+        if fail_count == len(ALL_PARAMS):
             return {"online": False}
 
         result["poll_time_ms"] = round((time.monotonic() - poll_start) * 1000)

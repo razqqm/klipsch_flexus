@@ -105,6 +105,85 @@ async def test_get_status_all_fail(api: KlipschAPI) -> None:
     assert result == {"online": False}
 
 
+async def test_get_status_standby_lightweight_poll(api: KlipschAPI) -> None:
+    """Test that standby mode only polls power and returns cached data."""
+    call_count = 0
+    call_paths: list[str] = []
+
+    # Pre-populate cache with some values (as if device was ON before)
+    api._last_status = {
+        "volume": 30,
+        "muted": False,
+        "input": "hdmiarc",
+        "mode": "movie",
+    }
+
+    async def mock_get_data(path, timeout=8):
+        nonlocal call_count
+        call_count += 1
+        call_paths.append(path)
+        if "powermanager" in path:
+            return [{"powerTarget": {"target": "networkStandby"}}]
+        # If we get here, the test should fail — standby should NOT poll other params
+        raise AssertionError(f"Unexpected poll in standby mode: {path}")
+
+    api.get_data = mock_get_data
+    result = await api.get_status()
+
+    # Only power was polled
+    assert call_count == 1
+    assert "powermanager" in call_paths[0]
+
+    # Device is online in standby
+    assert result["online"] is True
+    assert result["power"] == "networkStandby"
+    assert result["failed_params"] == 0
+
+    # Cached values preserved
+    assert result["volume"] == 30
+    assert result["input"] == "hdmiarc"
+    assert result["mode"] == "movie"
+
+    # Response time should be fast (< 1 second)
+    assert result["poll_time_ms"] < 1000
+
+
+async def test_get_status_standby_no_cache(api: KlipschAPI) -> None:
+    """Test standby with empty cache (first boot in standby)."""
+    api._last_status = {}
+
+    async def mock_get_data(path, timeout=8):
+        if "powermanager" in path:
+            return [{"powerTarget": {"target": "networkStandby"}}]
+        raise AssertionError(f"Unexpected poll: {path}")
+
+    api.get_data = mock_get_data
+    result = await api.get_status()
+
+    assert result["online"] is True
+    assert result["power"] == "networkStandby"
+    # No cached values — keys should be absent
+    assert "volume" not in result
+    assert "input" not in result
+
+
+async def test_get_status_power_fail_means_offline(api: KlipschAPI) -> None:
+    """Test that power query failure immediately returns offline."""
+    call_count = 0
+
+    async def mock_get_data(path, timeout=8):
+        nonlocal call_count
+        call_count += 1
+        raise TimeoutError()
+
+    api.get_data = mock_get_data
+    result = await api.get_status()
+
+    assert result == {"online": False}
+    # Only power was attempted (no further params polled)
+    assert call_count == 1
+
+
 async def test_close_session(api: KlipschAPI) -> None:
     """Test session cleanup."""
     mock_session = AsyncMock(spec=aiohttp.ClientSession)

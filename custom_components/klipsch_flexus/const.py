@@ -3,6 +3,7 @@
 DOMAIN = "klipsch_flexus"
 DEFAULT_PORT = 80
 SCAN_INTERVAL_SECONDS = 15
+SCAN_INTERVAL_STANDBY = 60  # slower polling when soundbar is in standby
 CONF_SCAN_INTERVAL = "scan_interval"
 
 # API timeouts (seconds) — soundbar is single-threaded and slow

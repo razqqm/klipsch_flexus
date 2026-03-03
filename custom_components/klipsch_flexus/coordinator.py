@@ -9,7 +9,12 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .api import KlipschAPI
-from .const import COMMAND_REFRESH_DELAY, DOMAIN, SCAN_INTERVAL_SECONDS
+from .const import (
+    COMMAND_REFRESH_DELAY,
+    DOMAIN,
+    SCAN_INTERVAL_SECONDS,
+    SCAN_INTERVAL_STANDBY,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -29,6 +34,8 @@ class KlipschCoordinator(DataUpdateCoordinator[dict]):
         self.api = api
         self.dirac_filters: list[dict] = []
         self.device_info: dict | None = None  # eureka_info from port 8008
+        self._normal_interval = timedelta(seconds=scan_interval)
+        self._standby_interval = timedelta(seconds=SCAN_INTERVAL_STANDBY)
 
     async def _async_update_data(self) -> dict:
         try:
@@ -38,6 +45,21 @@ class KlipschCoordinator(DataUpdateCoordinator[dict]):
 
         if not status.get("online"):
             return {"online": False}
+
+        # Adaptive polling interval: slow down in standby, speed up when on
+        is_standby = status.get("power") == "networkStandby"
+        desired = self._standby_interval if is_standby else self._normal_interval
+        if self.update_interval != desired:
+            self.update_interval = desired
+            _LOGGER.debug(
+                "Polling interval changed to %s s (%s)",
+                desired.total_seconds(),
+                "standby" if is_standby else "active",
+            )
+
+        # In standby skip heavy fetches (player data, eureka_info, dirac)
+        if is_standby:
+            return status
 
         # Fetch device info once (eureka_info from Google Cast API)
         if self.device_info is None:

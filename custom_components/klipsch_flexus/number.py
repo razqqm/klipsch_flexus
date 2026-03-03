@@ -43,6 +43,16 @@ class KlipschChannelLevel(CoordinatorEntity[KlipschCoordinator], NumberEntity):
         self._attr_device_info = {"identifiers": {(DOMAIN, entry.entry_id)}}
 
     @property
+    def available(self) -> bool:
+        """Unavailable when device is offline or in standby (can't control)."""
+        data = self.coordinator.data or {}
+        if not data.get("online"):
+            return False
+        if data.get("power") == "networkStandby":
+            return False
+        return super().available
+
+    @property
     def native_value(self) -> float | None:
         data = self.coordinator.data or {}
         if not data.get("online"):

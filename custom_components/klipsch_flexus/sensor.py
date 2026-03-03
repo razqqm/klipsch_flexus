@@ -117,6 +117,14 @@ class KlipschInputSensor(CoordinatorEntity[KlipschCoordinator], SensorEntity):
         self._attr_device_info = {"identifiers": {(DOMAIN, entry.entry_id)}}
 
     @property
+    def available(self) -> bool:
+        """Unavailable when device is offline (coordinator returned online=False)."""
+        data = self.coordinator.data or {}
+        if not data.get("online"):
+            return False
+        return super().available
+
+    @property
     def native_value(self) -> str | None:
         data = self.coordinator.data or {}
         if not data.get("online"):
@@ -144,6 +152,14 @@ class KlipschSoundModeSensor(CoordinatorEntity[KlipschCoordinator], SensorEntity
         super().__init__(coordinator)
         self._attr_unique_id = f"{entry.entry_id}_active_sound_mode"
         self._attr_device_info = {"identifiers": {(DOMAIN, entry.entry_id)}}
+
+    @property
+    def available(self) -> bool:
+        """Unavailable when device is offline (coordinator returned online=False)."""
+        data = self.coordinator.data or {}
+        if not data.get("online"):
+            return False
+        return super().available
 
     @property
     def native_value(self) -> str | None:
